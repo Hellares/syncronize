@@ -35,6 +35,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.2.0
+  lottie: ^3.3.1
+  rive: ^0.13.20
 
 dev_dependencies:
   flutter_test:
@@ -52,13 +54,11 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
   assets:
     - assets/img/
+    - assets/animations/
+    # - assets/onboard_animation.riv
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -76,12 +76,59 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Airstrike
+      fonts:
+        - asset: assets/fonts/airstrike.ttf
+          weight: 400
+    - family: Airstrike3D
+      fonts:
+        - asset: assets/fonts/airstrike3d.ttf
+          weight: 400
+    
+    # Airstrike Bold 3D
+    - family: AirstrikeBold3D
+      fonts:
+        - asset: assets/fonts/airstrikebold3d.ttf
+          weight: 700
+    
+    # Fonarito (fuente decorativa)
+    - family: Fonarto
+      fonts:
+        - asset: assets/fonts/Fonarto.ttf
+          weight: 400
+    
+    # FonartoXT
+    - family: FonartoXT
+      fonts:
+        - asset: assets/fonts/FonartoXT.ttf
+          weight: 400
+    
+    # Orbitron Medium (fuente futurista)
+    - family: Orbitron-Medium
+      fonts:
+        - asset: assets/fonts/Orbitron-Medium.ttf
+          weight: 500
+    
+    # Orbitron Regular
+    - family: Orbitron-Regular
+      fonts:
+        - asset: assets/fonts/Orbitron-Regular.ttf
+          weight: 400
+    
+    # Pirulent Bold (fuente stylizada)
+    - family: Pirulent
+      fonts:
+        - asset: assets/fonts/pirulen.ttf
+          weight: 700
+
+
+        
+        
+        
+
+
+
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../core/theme/app_colors.dart';
+// import '../../../core/theme/app_colors.dart'; // Descomenta según tu estructura
 
 // 🚀 ENUMS PARA ESTADOS DEL BOTÓN
 enum ButtonState {
@@ -17,7 +17,7 @@ class CustomButtonConstants {
   static const double defaultHeight = 40.0;
 }
 
-// 🚀 WIDGET PRINCIPAL - VERSIÓN SIMPLIFICADA
+// 🚀 WIDGET PRINCIPAL - CON CONTROL DE SOMBRAS
 class CustomButton extends StatefulWidget {
   // Propiedades básicas
   final String text;
@@ -34,7 +34,8 @@ class CustomButton extends StatefulWidget {
   final Duration? stateResetDuration;
 
   // Propiedades de estilo
-  final Gradient gradient;
+  final Gradient? gradient;
+  final Color? backgroundColor; // Para un fondo sólido
   final Color? borderColor;
   final double borderWidth;
   final double? width;
@@ -47,6 +48,9 @@ class CustomButton extends StatefulWidget {
   final Duration animationDuration;
   final bool showHapticFeedback;
 
+  // 🚀 NUEVA PROPIEDAD PARA CONTROLAR SOMBRAS
+  final bool enableShadows;
+
   // 🚀 PROPIEDADES DE TEXTO PERSONALIZABLES
   final Color? textColor;
   final FontWeight? fontWeight;
@@ -58,8 +62,10 @@ class CustomButton extends StatefulWidget {
   const CustomButton({
     super.key,
     required this.text,
-    required this.gradient,
+    this.gradient,
+    this.backgroundColor,
     this.onPressed,
+    
     this.enabled = true,
     // Propiedades de estado
     this.buttonState = ButtonState.idle,
@@ -79,6 +85,8 @@ class CustomButton extends StatefulWidget {
     this.textStyle,
     this.animationDuration = CustomButtonConstants.defaultAnimationDuration,
     this.showHapticFeedback = true,
+    // 🚀 CONTROL DE SOMBRAS (POR DEFECTO HABILITADAS)
+    this.enableShadows = true,
     // 🚀 PROPIEDADES DE TEXTO PERSONALIZABLES
     this.textColor,
     this.fontWeight,
@@ -114,7 +122,6 @@ class _CustomButtonState extends State<CustomButton>
       vsync: this,
     );
 
-    // Controlador para el efecto flash al hacer clic
     _flashController = AnimationController(
       duration: const Duration(milliseconds: 150),
       vsync: this,
@@ -131,7 +138,6 @@ class _CustomButtonState extends State<CustomButton>
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
-    // Animación para el color del borde al presionar (mantener presionado)
     _borderColorAnimation =
         ColorTween(
           begin: widget.borderColor,
@@ -143,7 +149,6 @@ class _CustomButtonState extends State<CustomButton>
           ),
         );
 
-    // Animación para el efecto flash al hacer clic
     _flashBorderAnimation =
         ColorTween(
           begin: widget.borderColor,
@@ -155,11 +160,10 @@ class _CustomButtonState extends State<CustomButton>
           ),
         );
 
-    // Animación para el grosor del borde al presionar (mantener presionado)
     _borderWidthAnimation =
         Tween<double>(
-          begin: 0.5, // Grosor normal
-          end: 1.0, // Grosor al presionar
+          begin: widget.borderWidth,
+          end: widget.borderWidth * 1.5, // 50% más grueso al presionar
         ).animate(
           CurvedAnimation(
             parent: _animationController,
@@ -167,11 +171,10 @@ class _CustomButtonState extends State<CustomButton>
           ),
         );
 
-    // Animación para el grosor del borde en el flash
     _flashBorderWidthAnimation =
         Tween<double>(
-          begin: 0.5, // Grosor normal
-          end: 1.0, // Grosor al hacer clic
+          begin: widget.borderWidth,
+          end: widget.borderWidth * 1.5, // 50% más grueso en flash
         ).animate(
           CurvedAnimation(
             parent: _flashController,
@@ -187,7 +190,6 @@ class _CustomButtonState extends State<CustomButton>
     super.dispose();
   }
 
-  // 🚀 MÉTODO PARA CONSTRUIR EL CONTENIDO SEGÚN EL ESTADO
   Widget _buildButtonContent() {
     switch (widget.buttonState) {
       case ButtonState.loading:
@@ -201,7 +203,6 @@ class _CustomButtonState extends State<CustomButton>
     }
   }
 
-  // 🚀 CONTENIDO PARA ESTADO IDLE (NORMAL)
   Widget _buildIdleContent() {
     return Text(
       widget.text,
@@ -210,7 +211,6 @@ class _CustomButtonState extends State<CustomButton>
     );
   }
 
-  // 🚀 CONTENIDO PARA ESTADO LOADING
   Widget _buildLoadingContent() {
     final loadingText = widget.loadingText ?? widget.text;
     final indicatorSize = widget.loadingIndicatorSize ?? 16.0;
@@ -240,12 +240,10 @@ class _CustomButtonState extends State<CustomButton>
     );
   }
 
-  // 🚀 CONTENIDO PARA ESTADO SUCCESS
   Widget _buildSuccessContent() {
     final successText = widget.successText ?? widget.text;
     final textStyle = _getTextStyle();
-    final iconColor =
-        widget.iconColor ?? Colors.white; // Color personalizado del ícono
+    final iconColor = widget.iconColor ?? Colors.white;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -264,12 +262,10 @@ class _CustomButtonState extends State<CustomButton>
     );
   }
 
-  // 🚀 CONTENIDO PARA ESTADO ERROR
   Widget _buildErrorContent() {
     final errorText = widget.errorText ?? widget.text;
     final textStyle = _getTextStyle();
-    final iconColor =
-        widget.iconColor ?? Colors.white; // Color personalizado del ícono
+    final iconColor = widget.iconColor ?? Colors.white;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -288,14 +284,12 @@ class _CustomButtonState extends State<CustomButton>
     );
   }
 
-  // 🚀 MÉTODO PARA VERIFICAR SI EL BOTÓN ESTÁ HABILITADO
   bool _isButtonEnabled() {
     return widget.enabled && widget.buttonState == ButtonState.idle;
   }
 
   void _handleTapDown(TapDownDetails details) {
     if (!_isButtonEnabled()) return;
-
     setState(() => _isPressed = true);
     _animationController.forward();
   }
@@ -320,13 +314,10 @@ class _CustomButtonState extends State<CustomButton>
       HapticFeedback.lightImpact();
     }
 
-    // Ejecutar efecto flash
     _triggerFlashEffect();
-
     widget.onPressed?.call();
   }
 
-  // Nuevo método para el efecto flash
   void _triggerFlashEffect() {
     setState(() => _isFlashing = true);
 
@@ -351,15 +342,14 @@ class _CustomButtonState extends State<CustomButton>
             height: widget.height ?? CustomButtonConstants.defaultHeight,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(
-                widget.borderRadius ??
-                    CustomButtonConstants.defaultBorderRadius,
+                widget.borderRadius ?? CustomButtonConstants.defaultBorderRadius,
               ),
-              boxShadow: _buildShadows(),
+              // 🚀 SOMBRAS SOLO SI enableShadows ES TRUE
+              boxShadow: widget.enableShadows ? _buildShadows() : null,
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(
-                widget.borderRadius ??
-                    CustomButtonConstants.defaultBorderRadius,
+                widget.borderRadius ?? CustomButtonConstants.defaultBorderRadius,
               ),
               child: Material(
                 color: Colors.transparent,
@@ -380,12 +370,11 @@ class _CustomButtonState extends State<CustomButton>
                             )
                           : null,
                       borderRadius: BorderRadius.circular(
-                        widget.borderRadius ??
-                            CustomButtonConstants.defaultBorderRadius,
+                        widget.borderRadius ?? CustomButtonConstants.defaultBorderRadius,
                       ),
+                      color: widget.backgroundColor ?? Colors.white,
                     ),
-                    padding:
-                        widget.padding ??
+                    padding: widget.padding ??
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Center(child: _buildButtonContent()),
                   ),
@@ -403,24 +392,23 @@ class _CustomButtonState extends State<CustomButton>
   }
 
   TextStyle _getTextStyle() {
-    // 🚀 ESTILO BASE CON PROPIEDADES PERSONALIZABLES
     final defaultStyle = TextStyle(
       fontSize: widget.fontSize ?? 14,
       fontWeight: widget.fontWeight ?? FontWeight.w600,
-      color:
-          widget.textColor ??
+      color: widget.textColor ??
           (widget.enabled ? Colors.white : Colors.grey.shade600),
       height: 1.2,
     );
 
-    // 🚀 APLICAR textStyle SI EXISTE (TIENE PRIORIDAD)
     return widget.textStyle != null
         ? defaultStyle.merge(widget.textStyle)
         : defaultStyle;
   }
 
-  List<BoxShadow> _buildShadows() {
-    if (!widget.enabled) return [];
+  // 🚀 MÉTODO DE SOMBRAS MODIFICADO - RETORNA NULL SI enableShadows ES FALSE
+  List<BoxShadow>? _buildShadows() {
+    // Si las sombras están deshabilitadas, retornar null
+    if (!widget.enableShadows || !widget.enabled) return null;
 
     final double intensity = _shadowAnimation.value;
     final Color shadowColor = _getShadowColorFromBorder();
@@ -465,24 +453,19 @@ class _CustomButtonState extends State<CustomButton>
   }
 
   Color _getShadowColorFromBorder() {
-    // Si hay borderColor, usar ese color para las sombras
     if (widget.borderColor != null) {
       final borderColor = widget.borderColor!;
 
-      if (borderColor == AppColors.blue ||
-          borderColor == const Color(0xFF1976D2)) {
+      // Colores específicos predefinidos
+      if (borderColor == Colors.blue || borderColor == const Color(0xFF1976D2)) {
         return const Color(0xFF0D47A1);
-      } else if (borderColor == Colors.red ||
-          borderColor == const Color(0xFFD32F2F)) {
+      } else if (borderColor == Colors.red || borderColor == const Color(0xFFD32F2F)) {
         return const Color(0xFF8D1E1E);
-      } else if (borderColor == Colors.green ||
-          borderColor == const Color(0xFF4CAF50)) {
+      } else if (borderColor == Colors.green || borderColor == const Color(0xFF4CAF50)) {
         return const Color(0xFF1B5E20);
-      } else if (borderColor == Colors.purple ||
-          borderColor == const Color(0xFF9C27B0)) {
+      } else if (borderColor == Colors.purple || borderColor == const Color(0xFF9C27B0)) {
         return const Color(0xFF4A148C);
       } else {
-        // Color genérico basado en HSL del borde
         HSLColor hsl = HSLColor.fromColor(borderColor);
         return HSLColor.fromAHSL(
           1.0,
@@ -493,7 +476,6 @@ class _CustomButtonState extends State<CustomButton>
       }
     }
 
-    // Si no hay borderColor, usar el primer color del gradiente
     if (widget.gradient is LinearGradient) {
       final linearGradient = widget.gradient as LinearGradient;
       final firstColor = linearGradient.colors.first;
@@ -510,45 +492,35 @@ class _CustomButtonState extends State<CustomButton>
     return const Color(0xFF424242);
   }
 
-  // Método para obtener el grosor actual del borde (combina ambos efectos)
   double _getCurrentBorderWidth() {
-    // Si está en modo flash, usar la animación flash
     if (_isFlashing) {
       return _flashBorderWidthAnimation.value;
     }
 
-    // Si está presionado (mantener presionado), usar la animación normal
     if (_isPressed) {
       return _borderWidthAnimation.value;
     }
 
-    // Grosor normal
-    return 0.5;
+    // Usar el borderWidth del widget como valor base
+    return widget.borderWidth;
   }
 
-  // Método para obtener el color actual del borde (combina ambos efectos)
   Color _getCurrentBorderColor() {
     if (widget.borderColor == null) return Colors.transparent;
 
-    // Si está en modo flash, usar la animación flash
     if (_isFlashing) {
       return _flashBorderAnimation.value ?? widget.borderColor!;
     }
 
-    // Si está presionado (mantener presionado), usar la animación normal
     if (_isPressed) {
       return _borderColorAnimation.value ?? widget.borderColor!;
     }
 
-    // Color normal
     return widget.borderColor!;
   }
 
-  // Método para obtener el color del borde cuando está presionado
   Color? _getPressedBorderColor() {
     if (widget.borderColor == null) return null;
-
-    // Siempre retornar verde cuando se presiona, independientemente del color original
     return Colors.green;
   }
 }
