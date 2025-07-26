@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:syncronize/core/fonts/app_fonts.dart';
 import 'package:syncronize/core/theme/app_colors.dart';
-import 'package:syncronize/core/theme/app_gradients.dart';
 import 'package:syncronize/core/widgets/appbar/custom_appbar.dart';
 import 'package:syncronize/core/widgets/custom_date_textfiels_container/custom_textfield.dart';
 import 'package:syncronize/core/widgets/cutom_button/custom_button.dart';
@@ -45,16 +42,7 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(
-    //   const SystemUiOverlayStyle(
-    //     statusBarColor: Colors.transparent,
-    //     // statusBarIconBrightness: Brightness.dark,
-    //     // statusBarBrightness: Brightness.light,
-    //     systemNavigationBarColor: Colors.transparent,
-    //     systemNavigationBarIconBrightness: Brightness.dark,
-    //     systemNavigationBarDividerColor: Colors.transparent,
-    //   ),
-    // );
+
 
     return Scaffold(
       // extendBodyBehindAppBar: true,
