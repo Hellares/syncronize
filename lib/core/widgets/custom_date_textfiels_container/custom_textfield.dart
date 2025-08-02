@@ -475,8 +475,9 @@ class CustomTextField extends StatefulWidget {
   final CountryCode country;
   final String currencySymbol;
   final bool enableRealTimeValidation;
+  
 
-  const CustomTextField({
+   const CustomTextField({
     super.key,
     this.label,
     this.hintText,

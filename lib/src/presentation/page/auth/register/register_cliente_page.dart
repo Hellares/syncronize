@@ -4,6 +4,7 @@ import 'package:syncronize/core/theme/app_colors.dart';
 import 'package:syncronize/core/widgets/appbar/custom_appbar.dart';
 import 'package:syncronize/core/widgets/custom_date_textfiels_container/custom_textfield.dart';
 import 'package:syncronize/core/widgets/cutom_button/custom_button.dart';
+import 'package:syncronize/core/widgets/divider_line.dart';
 import 'package:syncronize/core/widgets/rive_background.dart';
 
 class RegisterClientePage extends StatefulWidget {
@@ -15,7 +16,7 @@ class RegisterClientePage extends StatefulWidget {
 
 class _RegisterClientePageState extends State<RegisterClientePage> {
   final _formKey = GlobalKey<FormState>();
-  
+
   // Controladores para todos los campos
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -24,7 +25,7 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
   final _lastNameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _dniController = TextEditingController();
-  
+
   bool _acceptTerms = false;
   bool _isLoading = false;
 
@@ -42,14 +43,15 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
-      // extendBodyBehindAppBar: true,
-      // extendBody: true,
       appBar: CustomAppBar(
         title: 'Crear Cuenta',
         centerTitle: false,
+        titleStyle: TextStyle(
+          fontFamily: AppFont.pirulentBold.fontFamily,
+          fontSize: 10,
+          color: AppColors.blue2,
+        ),
       ),
       body: RiveBackground(
         blurX: 3,
@@ -67,25 +69,10 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // const SizedBox(height: 20),
-                    
+
                     // Logo y título
                     Column(
                       children: [
-                        // SvgPicture.asset(
-                        //   'assets/img/logoplano2.svg',
-                        //   height: 100,
-                        //   width: 100,
-                        // ),
-                        // const SizedBox(height: 16),
-                        // Text(
-                        //   'Crear Cuenta',
-                        //   style: TextStyle(
-                        //     fontFamily: 'Airstrike',
-                        //     fontSize: 24,
-                        //     fontWeight: FontWeight.w700,
-                        //     color: AppColors.blue2,
-                        //   ),
-                        // ),
                         const SizedBox(height: 8),
                         Text(
                           'Completa tus datos para registrarte',
@@ -96,20 +83,22 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
                       ],
                     ),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 15),
 
                     // Campos del formulario
                     Column(
                       children: [
                         // DNI
                         Row(
+                          
                           children: [
                             Expanded(
                               flex: 1,
-                              child: CustomTextField(                     
+                              child: CustomTextField(
                                 label: 'DNI',
+                                hintText: 'Digite su de DNI',
                                 controller: _dniController,
-                                borderColor: AppColors.green,
+                                borderColor: AppColors.blue,
                                 fieldType: FieldType.dni,
                                 validator: (value) {
                                   if (value?.isEmpty ?? true) {
@@ -122,16 +111,73 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
                                 },
                               ),
                             ),
-                            const Expanded(
-                              flex: 1,
-                              child: SizedBox(),
+                            const SizedBox(width: 15),
+
+                            Padding(
+                              padding: EdgeInsetsGeometry.only(top:17),                              
+                              child: CustomButton(
+                                backgroundColor: AppColors.blue,
+                                borderColor: AppColors.blue,
+                                textColor: AppColors.white,
+                                enableShadows: false,
+                                text: 'Consultar DNI',
+                                
+                              ),
+                            )
+                            // const Expanded(
+                            //   // flex: 1,
+                            //   child: SizedBox(),
+                            // ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        // Apellido
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                label: 'Apellido Paterno',
+                                enabled: false,
+                                controller: _lastNameController,
+                                borderColor: AppColors.blue,
+                                prefixIcon: Icon(
+                                  Icons.person_outline,
+                                  color: AppColors.blue,
+                                ),
+                                validator: (value) {
+                                  if (value?.isEmpty ?? true) {
+                                    return 'El apellido es requerido';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: CustomTextField(
+                                label: 'Apellido Materno',
+                                enabled: false,
+                                controller: _lastNameController,
+                                borderColor: AppColors.blue,
+                                prefixIcon: Icon(
+                                  Icons.person_outline,
+                                  color: AppColors.blue,
+                                ),
+                                validator: (value) {
+                                  if (value?.isEmpty ?? true) {
+                                    return 'El apellido es requerido';
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // Nombre
+
                         CustomTextField(
-                          label: 'Nombre',
+                          label: 'Nombres',
+                          enabled: false,
                           controller: _firstNameController,
                           borderColor: AppColors.blue,
                           prefixIcon: Icon(
@@ -148,27 +194,92 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
 
                         const SizedBox(height: 16),
 
-                        // Apellido
                         CustomTextField(
-                          label: 'Apellido',
-                          controller: _lastNameController,
+                          label: 'Departamento',
+                          enabled: false,
+                          controller: _firstNameController,
                           borderColor: AppColors.blue,
                           prefixIcon: Icon(
-                            Icons.person_outline,
+                            Icons.location_on_outlined,
                             color: AppColors.blue,
                           ),
                           validator: (value) {
                             if (value?.isEmpty ?? true) {
-                              return 'El apellido es requerido';
+                              return 'El nombre es requerido';
                             }
                             return null;
                           },
                         ),
+
+                        const SizedBox(height: 16),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                label: 'Provincia',
+                                enabled: false,
+                                controller: _lastNameController,
+                                borderColor: AppColors.blue,
+                                prefixIcon: Icon(
+                                  Icons.location_on_outlined,
+                                  color: AppColors.blue,
+                                ),
+                                validator: (value) {
+                                  if (value?.isEmpty ?? true) {
+                                    return 'El apellido es requerido';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: CustomTextField(
+                                label: 'Distrito',
+                                enabled: false,
+                                controller: _lastNameController,
+                                borderColor: AppColors.blue,
+                                prefixIcon: Icon(
+                                  Icons.location_on_outlined,
+                                  color: AppColors.blue,
+                                ),
+                                validator: (value) {
+                                  if (value?.isEmpty ?? true) {
+                                    return 'El apellido es requerido';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        CustomTextField(
+                          label: 'Dirección',
+                          enabled: false,
+                          controller: _firstNameController,
+                          borderColor: AppColors.blue,
+                          prefixIcon: Icon(
+                            Icons.location_on_outlined,
+                            color: AppColors.blue,
+                          ),
+                          validator: (value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'El nombre es requerido';
+                            }
+                            return null;
+                          },
+                        ),
+
                         const SizedBox(height: 16),
 
                         // Email
                         CustomTextField(
                           label: 'Email',
+                          hintText: 'example@gmail.com',
                           controller: _emailController,
                           borderColor: AppColors.blue,
                           prefixIcon: Icon(
@@ -179,7 +290,9 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
                             if (value?.isEmpty ?? true) {
                               return 'El email es requerido';
                             }
-                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value!)) {
+                            if (!RegExp(
+                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                            ).hasMatch(value!)) {
                               return 'Ingresa un email válido';
                             }
                             return null;
@@ -188,24 +301,10 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
 
                         const SizedBox(height: 16),
 
-                        // Teléfono
-                        CustomTextField(
+                        CustomTextFieldHelpers.phone(
                           label: 'Teléfono',
                           controller: _phoneController,
                           borderColor: AppColors.blue,
-                          prefixIcon: Icon(
-                            Icons.phone_outlined,
-                            color: AppColors.blue,
-                          ),
-                          validator: (value) {
-                            if (value?.isEmpty ?? true) {
-                              return 'El teléfono es requerido';
-                            }
-                            if (value!.length < 9) {
-                              return 'Ingresa un teléfono válido';
-                            }
-                            return null;
-                          },
                         ),
 
                         const SizedBox(height: 16),
@@ -296,7 +395,8 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
                                           style: TextStyle(
                                             color: AppColors.blue,
                                             fontWeight: FontWeight.w600,
-                                            decoration: TextDecoration.underline,
+                                            decoration:
+                                                TextDecoration.underline,
                                           ),
                                         ),
                                         const TextSpan(text: ' y la '),
@@ -305,7 +405,8 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
                                           style: TextStyle(
                                             color: AppColors.blue,
                                             fontWeight: FontWeight.w600,
-                                            decoration: TextDecoration.underline,
+                                            decoration:
+                                                TextDecoration.underline,
                                           ),
                                         ),
                                       ],
@@ -334,33 +435,7 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
                         const SizedBox(height: 24),
 
                         // Divisor
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                color: Colors.black.withValues(alpha: 0.3),
-                                thickness: 1,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: Text(
-                                'O',
-                                style: TextStyle(
-                                  color: Colors.black.withValues(alpha: 0.3),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Divider(
-                                color: Colors.black.withValues(alpha: 0.3),
-                                thickness: 1,
-                              ),
-                            ),
-                          ],
-                        ),
+                        DividerLine(),
 
                         const SizedBox(height: 24),
 
@@ -371,7 +446,7 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
                             Text(
                               '¿Ya tienes cuenta? ',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 12,
                                 color: AppColors.blueGrey,
                               ),
                             ),
@@ -380,7 +455,7 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
                               child: Text(
                                 'Iniciar Sesión',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   color: AppColors.blue,
                                   fontWeight: FontWeight.w600,
                                   decoration: TextDecoration.underline,
@@ -432,17 +507,18 @@ class _RegisterClientePageState extends State<RegisterClientePage> {
 
       // Simulación de registro
       await Future.delayed(const Duration(seconds: 2));
-      
+
       print('Registro - Email: ${_emailController.text}');
-      print('Registro - Nombre: ${_firstNameController.text} ${_lastNameController.text}');
+      print(
+        'Registro - Nombre: ${_firstNameController.text} ${_lastNameController.text}',
+      );
       print('Registro - DNI: ${_dniController.text}');
       print('Registro - Teléfono: ${_phoneController.text}');
-      
+
       _showSnackBar('¡Cuenta creada exitosamente!');
-      
+
       // Navegar al login o dashboard
       Navigator.of(context).pop();
-      
     } catch (e) {
       _showSnackBar('Error al crear la cuenta. Intenta nuevamente.');
     } finally {

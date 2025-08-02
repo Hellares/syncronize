@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:syncronize/core/fonts/app_fonts.dart';
 import 'package:syncronize/core/theme/app_colors.dart';
@@ -17,6 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double elevation;
   final bool centerTitle;
   final Color? iconColor;
+  final SystemUiOverlayStyle? systemOverlayStyle; // NUEVA PROPIEDAD
 
   const CustomAppBar({
     super.key,
@@ -29,10 +31,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.backgroundColor = Colors.transparent,
     this.showLogo = true,
     this.logoPath = 'assets/animations/logo1.json',
-    this.logoSize = 30,
+    this.logoSize = 27,
     this.elevation = 0,
     this.centerTitle = true,
     this.iconColor,
+    this.systemOverlayStyle, // NUEVA PROPIEDAD
   });
 
   @override
@@ -42,6 +45,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: elevation,
       centerTitle: centerTitle,
       automaticallyImplyLeading: false,
+      // AGREGADO: Configuración del SystemUiOverlayStyle
+      systemOverlayStyle: systemOverlayStyle ?? const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark, // Por defecto iconos oscuros
+        statusBarBrightness: Brightness.light, // Para iOS
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarDividerColor: Colors.transparent,
+      ),
       title: _buildTitle(),
       leading: _buildLeftWidget(context),
       actions: showLogo ? [_buildLogoWidget()] : null,
@@ -56,12 +68,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     
     return Text(
       title!,
-      // style: titleStyle ??
-      //     TextStyle(
-      //       fontFamily: 'pirulen',
-      //       fontSize: 11,
-      //       color: AppColors.blue2,
-      //     ),
       style: titleStyle ?? AppFont.pirulentBold.style(
         fontSize: 11,
         color: AppColors.blue2,
@@ -108,6 +114,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         icon: Icon(
           Icons.arrow_back_ios,
           color: iconColor ?? AppColors.blue,
+          size: 20,
         ),
         onPressed: onLeftTap ?? () => Navigator.of(context).pop(),
       );
@@ -162,105 +169,161 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-// Ejemplos de uso del CustomAppBar
+// Ejemplos de uso del CustomAppBar ACTUALIZADOS
 
-class AppBarExamples {
+// class AppBarExamples {
   
-  // 1. AppBar básico con logo (para páginas principales)
-  static CustomAppBar basic({String? title}) {
-    return CustomAppBar(
-      title: title,
-      showLogo: true,
-    );
-  }
+//   // 1. AppBar básico con logo (para páginas principales)
+//   static CustomAppBar basic({String? title}) {
+//     return CustomAppBar(
+//       title: title,
+//       showLogo: true,
+//       systemOverlayStyle: const SystemUiOverlayStyle(
+//         statusBarIconBrightness: Brightness.dark,
+//         statusBarBrightness: Brightness.light,
+//       ),
+//     );
+//   }
 
-  // 2. AppBar con flecha atrás (para páginas secundarias)
-  static CustomAppBar withBackButton({
-    String? title,
-    VoidCallback? onBack,
-  }) {
-    return CustomAppBar(
-      title: title,
-      leftIcon: Icons.arrow_back_ios,
-      onLeftTap: onBack,
-      showLogo: true,
-    );
-  }
+//   // 2. AppBar con flecha atrás (para páginas secundarias)
+//   static CustomAppBar withBackButton({
+//     String? title,
+//     VoidCallback? onBack,
+//   }) {
+//     return CustomAppBar(
+//       title: title,
+//       leftIcon: Icons.arrow_back_ios,
+//       onLeftTap: onBack,
+//       showLogo: true,
+//       systemOverlayStyle: const SystemUiOverlayStyle(
+//         statusBarColor: Colors.transparent,
+//         statusBarIconBrightness: Brightness.dark,
+//         statusBarBrightness: Brightness.light,
+//         systemNavigationBarColor: Colors.transparent,
+//         systemNavigationBarIconBrightness: Brightness.dark,
+//       ),
+//     );
+//   }
 
-  // 3. AppBar con icono personalizado
-  static CustomAppBar withCustomIcon({
-    String? title,
-    IconData? icon,
-    VoidCallback? onIconTap,
-  }) {
-    return CustomAppBar(
-      title: title,
-      leftIcon: icon,
-      onLeftTap: onIconTap,
-      showLogo: true,
-    );
-  }
+//   // 3. AppBar con icono personalizado
+//   static CustomAppBar withCustomIcon({
+//     String? title,
+//     IconData? icon,
+//     VoidCallback? onIconTap,
+//   }) {
+//     return CustomAppBar(
+//       title: title,
+//       leftIcon: icon,
+//       onLeftTap: onIconTap,
+//       showLogo: true,
+//       systemOverlayStyle: const SystemUiOverlayStyle(
+//         statusBarIconBrightness: Brightness.dark,
+//         statusBarBrightness: Brightness.light,
+//       ),
+//     );
+//   }
 
-  // 4. AppBar con imagen/avatar
-  static CustomAppBar withImage({
-    String? title,
-    String? imagePath,
-    VoidCallback? onImageTap,
-  }) {
-    return CustomAppBar(
-      title: title,
-      leftIconPath: imagePath,
-      onLeftTap: onImageTap,
-      showLogo: true,
-    );
-  }
+//   // 4. AppBar con imagen/avatar
+//   static CustomAppBar withImage({
+//     String? title,
+//     String? imagePath,
+//     VoidCallback? onImageTap,
+//   }) {
+//     return CustomAppBar(
+//       title: title,
+//       leftIconPath: imagePath,
+//       onLeftTap: onImageTap,
+//       showLogo: true,
+//       systemOverlayStyle: const SystemUiOverlayStyle(
+//         statusBarIconBrightness: Brightness.dark,
+//         statusBarBrightness: Brightness.light,
+//       ),
+//     );
+//   }
 
-  // 5. AppBar con widget completamente personalizado
-  static CustomAppBar withCustomWidget({
-    String? title,
-    Widget? customWidget,
-    VoidCallback? onWidgetTap,
-  }) {
-    return CustomAppBar(
-      title: title,
-      leftWidget: customWidget,
-      onLeftTap: onWidgetTap,
-      showLogo: true,
-    );
-  }
+//   // 5. AppBar con widget completamente personalizado
+//   static CustomAppBar withCustomWidget({
+//     String? title,
+//     Widget? customWidget,
+//     VoidCallback? onWidgetTap,
+//   }) {
+//     return CustomAppBar(
+//       title: title,
+//       leftWidget: customWidget,
+//       onLeftTap: onWidgetTap,
+//       showLogo: true,
+//       systemOverlayStyle: const SystemUiOverlayStyle(
+//         statusBarIconBrightness: Brightness.dark,
+//         statusBarBrightness: Brightness.light,
+//       ),
+//     );
+//   }
 
-  // 6. AppBar sin logo (minimalista)
-  static CustomAppBar withoutLogo({
-    String? title,
-    IconData? leftIcon,
-    VoidCallback? onLeftTap,
-  }) {
-    return CustomAppBar(
-      title: title,
-      leftIcon: leftIcon,
-      onLeftTap: onLeftTap,
-      showLogo: false,
-    );
-  }
+//   // 6. AppBar sin logo (minimalista)
+//   static CustomAppBar withoutLogo({
+//     String? title,
+//     IconData? leftIcon,
+//     VoidCallback? onLeftTap,
+//   }) {
+//     return CustomAppBar(
+//       title: title,
+//       leftIcon: leftIcon,
+//       onLeftTap: onLeftTap,
+//       showLogo: false,
+//       systemOverlayStyle: const SystemUiOverlayStyle(
+//         statusBarIconBrightness: Brightness.dark,
+//         statusBarBrightness: Brightness.light,
+//       ),
+//     );
+//   }
 
-  // 7. AppBar con fondo colorido
-  static CustomAppBar colored({
-    String? title,
-    Color? backgroundColor,
-    Color? iconColor,
-    Color? textColor,
-  }) {
-    return CustomAppBar(
-      title: title,
-      backgroundColor: backgroundColor ?? AppColors.blue,
-      iconColor: iconColor ?? Colors.white,
-      titleStyle: TextStyle(
-        fontFamily: 'Airstrike',
-        fontSize: 13,
-        fontWeight: FontWeight.w700,
-        color: textColor ?? Colors.white,
-      ),
-      showLogo: true,
-    );
-  }
-}
+//   // 7. AppBar con fondo colorido
+//   static CustomAppBar colored({
+//     String? title,
+//     Color? backgroundColor,
+//     Color? iconColor,
+//     Color? textColor,
+//   }) {
+//     return CustomAppBar(
+//       title: title,
+//       backgroundColor: backgroundColor ?? AppColors.blue,
+//       iconColor: iconColor ?? Colors.white,
+//       titleStyle: TextStyle(
+//         fontFamily: 'Airstrike',
+//         fontSize: 13,
+//         fontWeight: FontWeight.w700,
+//         color: textColor ?? Colors.white,
+//       ),
+//       showLogo: true,
+//       // Para fondos oscuros, usar iconos claros
+//       systemOverlayStyle: SystemUiOverlayStyle(
+//         statusBarColor: backgroundColor ?? AppColors.blue,
+//         statusBarIconBrightness: Brightness.light, // Iconos claros para fondo oscuro
+//         statusBarBrightness: Brightness.dark,
+//         systemNavigationBarColor: backgroundColor ?? AppColors.blue,
+//         systemNavigationBarIconBrightness: Brightness.light,
+//       ),
+//     );
+//   }
+
+  // NUEVO: AppBar específico para registro con iconos oscuros
+  // static CustomAppBar forRegister({
+  //   String? title,
+  //   VoidCallback? onBack,
+  // }) {
+  //   return CustomAppBar(
+  //     title: title,
+  //     centerTitle: false,
+  //     showLogo: true,
+  //     onLeftTap: onBack,
+  //     systemOverlayStyle: const SystemUiOverlayStyle(
+  //       statusBarColor: Colors.transparent,
+  //       statusBarIconBrightness: Brightness.dark, // Iconos oscuros para registro
+  //       statusBarBrightness: Brightness.light,
+  //       systemNavigationBarColor: Colors.transparent,
+  //       systemNavigationBarIconBrightness: Brightness.dark,
+  //       systemNavigationBarDividerColor: Colors.transparent,
+  //     ),
+  //   );
+  // }
+// }

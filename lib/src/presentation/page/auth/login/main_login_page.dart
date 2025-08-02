@@ -4,32 +4,22 @@ import 'package:flutter_svg/svg.dart';
 import 'package:syncronize/core/fonts/app_fonts.dart';
 import 'package:syncronize/core/theme/app_colors.dart';
 import 'package:syncronize/core/widgets/rive_background.dart';
-// Importa tus widgets separados
-import 'cliente_login_widget.dart';
-import 'empresa_login_widget.dart';
+import 'package:syncronize/src/presentation/page/auth/login/cliente/cliente_login_page.dart';
+import 'package:syncronize/src/presentation/page/auth/login/empresa/empresa_login_widget.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class MainLoginPage extends StatefulWidget {
+  const MainLoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<MainLoginPage> createState() => _MainLoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _MainLoginPageState extends State<MainLoginPage> {
   bool _isEmpresa = false; // false = Cliente, true = Empresa
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.dark,
-        systemNavigationBarDividerColor: Colors.transparent,
-      ),
-    );
+    _transparentBar();
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -48,50 +38,15 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Logo
-                  Column(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/img/logoplano2.svg',
-                        height: 110,
-                        width: 110,
-                      ),
-                      Text(
-                        'Syncronize',
-                        style: AppFont.airstrikeBold3d.style(
-                          fontSize: 21,
-                          color: AppColors.blue2,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
+                  _buildLogoSection(),
 
                   const SizedBox(height: 30),
 
-                  // Toggle minimalista
                   _buildToggleSwitch(),
 
                   const SizedBox(height: 30),
 
-                  // Contenido dinámico basado en el toggle
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: SlideTransition(
-                          position: animation.drive(
-                            Tween(begin: const Offset(0.0, 0.1), end: Offset.zero),
-                          ),
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: _isEmpresa 
-                        ? const EmpresaLoginWidget() 
-                        : const ClienteLoginWidget(),
-                  ),
+                  _buildContent(),
 
                   const SizedBox(height: 80),
                 ],
@@ -100,6 +55,40 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void _transparentBar() {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarDividerColor: Colors.transparent,
+      ),
+    );
+  }
+
+  Widget _buildLogoSection() {
+    return Column(
+      children: [
+        SvgPicture.asset(
+          'assets/img/logoplano2.svg',
+          height: 110,
+          width: 110,
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Syncronize',
+          style: AppFont.airstrikeBold3d.style(
+            fontSize: 20,
+            color: AppColors.blue2,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
     );
   }
 
@@ -112,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
           Text(
             'Cliente',
             style: AppFont.pirulentBold.style(
-              fontSize: 10,
+              fontSize: 9,
               fontWeight: FontWeight.w700,
               color: !_isEmpresa ? AppColors.blue : AppColors.grey,
             ),
@@ -130,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
               width: 50,
-              height: 25,
+              height: 23,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(14),
                 color: _isEmpresa ? AppColors.blue : Colors.grey.shade300,
@@ -163,13 +152,33 @@ class _LoginPageState extends State<LoginPage> {
           Text(
             'Empresa',
             style: AppFont.pirulentBold.style(
-              fontSize: 10,
+              fontSize: 9,
               fontWeight: FontWeight.w700,
               color: _isEmpresa ? AppColors.blue : AppColors.grey,
             ),
           )
         ],
       ),
+    );
+  }
+
+  Widget _buildContent() {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 800),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: animation.drive(
+              Tween(begin: const Offset(0.0, 0.1), end: Offset.zero),
+            ),
+            child: child,
+          ),
+        );
+      },
+      child: _isEmpresa 
+          ? const EmpresaLoginWidget(key: ValueKey('empresa'))
+          : const ClienteLoginPage(key: ValueKey('cliente')),
     );
   }
 }
