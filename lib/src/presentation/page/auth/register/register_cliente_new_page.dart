@@ -48,20 +48,10 @@ class _RegisterClienteNewPageState extends State<RegisterClienteNewPage> {
           final responseState = state.response;
           
           if (responseState is Error) {
-            // Fluttertoast.showToast(
-            //   msg: responseState.message,
-            //   toastLength: Toast.LENGTH_LONG,
-            //   backgroundColor: Colors.red,
-            //   textColor: Colors.white,
-            // );
+
             SnackBarHelper.showError(context, responseState.message);
           } else if (responseState is Success<AuthResponseRegisterNew>) {
-            // Fluttertoast.showToast(
-            //   msg: '¡Cuenta creada exitosamente!',
-            //   toastLength: Toast.LENGTH_LONG,
-            //   backgroundColor: Colors.green,
-            //   textColor: Colors.white,
-            // );
+
             SnackBarHelper.showSuccess(context, '¡Cuenta creada exitosamente!');
             // Navegar al login o dashboard
             Navigator.of(context).pop();

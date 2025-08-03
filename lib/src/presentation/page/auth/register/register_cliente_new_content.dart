@@ -214,10 +214,10 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
             ),
           ),
           const SizedBox(width: 15),
-          Padding(
-            padding: EdgeInsetsGeometry.only(top: 16),
-            child: Expanded(
-              flex: 1,
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16),
               child: CustomButton(
                 backgroundColor: AppColors.blue,
                 borderColor: AppColors.blue,
