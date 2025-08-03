@@ -223,7 +223,7 @@ class _CustomButtonState extends State<CustomButton>
           width: indicatorSize,
           height: indicatorSize,
           child: CircularProgressIndicator(
-            strokeWidth: 2.0,
+            strokeWidth: 1.5,
             valueColor: AlwaysStoppedAnimation<Color>(indicatorColor),
           ),
         ),

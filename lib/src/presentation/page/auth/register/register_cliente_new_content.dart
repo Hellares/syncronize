@@ -197,6 +197,7 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
             flex: 2,
             child: CustomTextFieldHelpers.dni(
               label: 'DNI', 
+              enableRealTimeValidation: false,
               borderColor: AppColors.blue,
               hintText: 'Digite su de DNI',
               labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 11),
@@ -214,6 +215,12 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
               borderColor: AppColors.blue,                
               enableShadows: false,
               text: 'Consultar DNI',
+              buttonState: widget.state.isConsultingDni 
+                  ? ButtonState.loading 
+                  : ButtonState.idle,
+              loadingText: 'Consultando...',
+              loadingIndicatorColor: AppColors.white,
+              loadingIndicatorSize: 14.0,
               textStyle: AppFont.orbitronMedium.style(color: AppColors.white, fontSize: 12),
               onPressed: widget.state.isConsultingDni
                   ? null

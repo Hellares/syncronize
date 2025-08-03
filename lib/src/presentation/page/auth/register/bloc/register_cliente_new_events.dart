@@ -65,3 +65,7 @@ class RegisterNewSubmitted extends RegisterClienteNewEvent {
 class FormNewReset extends RegisterClienteNewEvent {
   const FormNewReset();
 }
+
+class ClearAllStates extends RegisterClienteNewEvent {
+  const ClearAllStates();
+}

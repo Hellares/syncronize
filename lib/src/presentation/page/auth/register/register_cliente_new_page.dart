@@ -9,6 +9,7 @@ import 'package:syncronize/core/widgets/snack.dart';
 import 'package:syncronize/src/domain/models/auth_response_register_new.dart';
 import 'package:syncronize/src/domain/utils/resource.dart';
 import 'package:syncronize/src/presentation/page/auth/register/bloc/register_cliente_new_bloc.dart';
+import 'package:syncronize/src/presentation/page/auth/register/bloc/register_cliente_new_events.dart';
 import 'package:syncronize/src/presentation/page/auth/register/bloc/register_cliente_new_state.dart';
 import 'package:syncronize/src/presentation/page/auth/register/register_cliente_new_content.dart';
 
@@ -29,6 +30,13 @@ class _RegisterClienteNewPageState extends State<RegisterClienteNewPage> {
   }
 
   @override
+  void dispose() {
+    // Limpiar todos los estados del Bloc antes de destruir la pantalla
+    _bloc?.add(const ClearAllStates());
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _bloc = BlocProvider.of<RegisterClienteNewBloc>(context);
     
@@ -44,14 +52,16 @@ class _RegisterClienteNewPageState extends State<RegisterClienteNewPage> {
         ),
       ),
       body: BlocListener<RegisterClienteNewBloc, RegisterClienteNewState>(
+        listenWhen: (previous, current) {
+          // Solo escuchar cuando el response cambie y no sea null
+          return previous.response != current.response && current.response != null;
+        },
         listener: (context, state) {
           final responseState = state.response;
           
           if (responseState is Error) {
-
             SnackBarHelper.showError(context, responseState.message);
           } else if (responseState is Success<AuthResponseRegisterNew>) {
-
             SnackBarHelper.showSuccess(context, '¡Cuenta creada exitosamente!');
             // Navegar al login o dashboard
             Navigator.of(context).pop();

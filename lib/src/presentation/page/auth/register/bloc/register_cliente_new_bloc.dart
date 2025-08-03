@@ -26,6 +26,7 @@ class RegisterClienteNewBloc extends Bloc<RegisterClienteNewEvent, RegisterClien
     on<AcceptTermsChanged>(_onAcceptTermsChanged);
     // on<RegisterNewSubmitted>(_onRegisterSubmitted);
     on<FormNewReset>(_onFormReset);
+    on<ClearAllStates>(_onClearAllStates);
   }
 
   Future<void> _onInitEvent(RegisterClienteNewInitEvent event, Emitter<RegisterClienteNewState> emit) async {
@@ -46,6 +47,8 @@ class RegisterClienteNewBloc extends Bloc<RegisterClienteNewEvent, RegisterClien
       provincia: const BlocFormItem(value: ''),
       distrito: const BlocFormItem(value: ''),
       direccion: const BlocFormItem(value: ''),
+      // Limpiar el response para eliminar mensajes de error previos
+      response: null,
     ));
   }
 
@@ -196,5 +199,10 @@ class RegisterClienteNewBloc extends Bloc<RegisterClienteNewEvent, RegisterClien
     if (password.isEmpty) return 'Contraseña requerida';
     if (password.length < 8) return 'Mínimo 8 caracteres';
     return null;
+  }
+  
+
+  Future<void> _onClearAllStates(ClearAllStates event, Emitter<RegisterClienteNewState> emit) async {
+    emit(const RegisterClienteNewState());
   }
 }
