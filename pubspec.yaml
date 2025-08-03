@@ -44,10 +44,6 @@ flutter:
     - assets/animations/
 
   fonts:
-    - family: Airstrike
-      fonts:
-        - asset: assets/fonts/airstrike.ttf
-          weight: 400
     - family: Airstrike3D
       fonts:
         - asset: assets/fonts/airstrike3d.ttf
@@ -58,18 +54,6 @@ flutter:
       fonts:
         - asset: assets/fonts/airstrikebold3d.ttf
           weight: 700
-    
-    # Fonarito (fuente decorativa)
-    - family: Fonarto
-      fonts:
-        - asset: assets/fonts/Fonarto.ttf
-          weight: 400
-    
-    # FonartoXT
-    - family: FonartoXT
-      fonts:
-        - asset: assets/fonts/FonartoXT.ttf
-          weight: 400
     
     # Orbitron Medium (fuente futurista)
     - family: Orbitron-Medium
@@ -89,6 +73,25 @@ flutter:
         - asset: assets/fonts/pirulen.ttf
           weight: 700
 
+    - family: jetbrains-mono.medium-medium
+      fonts:
+        - asset: assets/fonts/jetbrains-mono.medium-medium.ttf
+    
+    - family: Cascadia
+      fonts:
+        - asset: assets/fonts/Cascadia.ttf
+
+    - family: Oxygen-Bold
+      fonts:
+        - asset: assets/fonts/Oxygen-Bold.ttf
+
+    - family: Oxygen-Light
+      fonts:
+        - asset: assets/fonts/Oxygen-Light.ttf
+    
+    - family: Oxygen-Regular
+      fonts:
+        - asset: assets/fonts/Oxygen-Regular.ttf
 
         
         

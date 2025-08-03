@@ -5,7 +5,6 @@ import 'package:syncronize/core/theme/app_theme.dart';
 import 'package:syncronize/injection.dart';
 import 'package:syncronize/src/presentation/page/auth/login/main_login_page.dart';
 import 'package:syncronize/src/presentation/page/auth/register/register_cliente_new_page.dart';
-import 'package:syncronize/src/presentation/page/auth/register/register_cliente_page.dart';
 
 
 void main() async {
@@ -29,7 +28,7 @@ class MyApp extends StatelessWidget {
         initialRoute: 'login',
         routes: {
           'login': (context) => const MainLoginPage(),
-          'registerCliente': (context) => const RegisterClientePage(),
+          // 'registerCliente': (context) => const RegisterClientePage(),
           'register/new': (BuildContext context) => const RegisterClienteNewPage(),
         },
       ),

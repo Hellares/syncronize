@@ -189,16 +189,16 @@ class _EmpresaLoginWidgetState extends State<EmpresaLoginWidget> {
     //   ),
     // );
     
-    print('Empresa Login - RUC: ${_rucController.text}, Usuario: ${_usuarioController.text}, Password: ${_passwordController.text}');
+    // print('Empresa Login - RUC: ${_rucController.text}, Usuario: ${_usuarioController.text}, Password: ${_passwordController.text}');
   }
 
   void _handleForgotPassword() {
     // TODO: Navegar a recuperación de contraseña para empresa
-    print('Forgot password - Empresa');
+    // print('Forgot password - Empresa');
   }
 
   void _handleRegister() {
     // TODO: Navegar a registro de empresa
-    print('Register - Empresa');
+    // print('Register - Empresa');
   }
 }

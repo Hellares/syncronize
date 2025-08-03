@@ -914,6 +914,7 @@ class _CustomTextFieldState extends State<CustomTextField>
                   contentPadding: _getCachedContentPadding(),
                   hintStyle: _getCachedHintStyle(),
                   counterText: '', // Oculta el contador por defecto
+                  
                 ),
               ),
             ),
@@ -961,7 +962,7 @@ class _CustomTextFieldState extends State<CustomTextField>
       children: [
         if (widget.label != null) ...[
           Text(widget.label!, style: _getCachedLabelStyle()),
-          const SizedBox(height: 2),
+          // const SizedBox(height: 2),
         ],
         textField,
         if (widget.enableRealTimeValidation &&
@@ -997,10 +998,11 @@ class _CustomTextFieldState extends State<CustomTextField>
     return _cachedTextStyle ??=
         widget.textStyle ??
         TextStyle(
-          color: widget.enabled ? Colors.black87 : Colors.grey[600],
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          height: 1.2,
+          color: widget.enabled ? AppColors.blue2 : AppColors.blue,
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          // height: 1.2,
+          fontFamily: 'Oxygen-Regular'
         );
   }
 
@@ -1324,9 +1326,12 @@ class CustomTextFieldHelpers {
     Color? borderColor,
     Function(String)? onChanged,
     bool enableRealTimeValidation = true,
+    TextStyle? labelStyle
+    
   }) {
     return CustomTextField(
       label: label,
+      labelStyle: labelStyle,
       hintText: hintText ?? 'Número de teléfono',
       controller: controller,
       fieldType: FieldType.phone,
@@ -1336,12 +1341,14 @@ class CustomTextFieldHelpers {
       validator: (value) =>
           FieldValidators.validatePhone(value, country: country),
       onChanged: onChanged,
+
     );
   }
 
   /// Crea un campo de email con validación estricta
   static CustomTextField email({
     required String label,
+    TextStyle? labelStyle,
     required TextEditingController controller,
     String? hintText,
     Color? borderColor,
@@ -1350,6 +1357,7 @@ class CustomTextFieldHelpers {
   }) {
     return CustomTextField(
       label: label,
+      labelStyle: labelStyle,
       hintText: hintText ?? 'correo@ejemplo.com',
       controller: controller,
       fieldType: FieldType.email,
@@ -1389,9 +1397,12 @@ class CustomTextFieldHelpers {
     Color? borderColor,
     Function(String)? onChanged,
     bool enableRealTimeValidation = true,
+    TextStyle? labelStyle
+    
   }) {
     return CustomTextField(
       label: label,
+      labelStyle: labelStyle,
       hintText: hintText ?? '12345678',
       controller: controller,
       fieldType: FieldType.dni,
@@ -1462,6 +1473,7 @@ class CustomTextFieldHelpers {
     Function(String)? onChanged,
     String? Function(String?)? validator,
     bool enableRealTimeValidation = true,
+    TextStyle? labelStyle
   }) {
     return CustomTextField(
       label: label,
@@ -1470,6 +1482,7 @@ class CustomTextFieldHelpers {
       fieldType: FieldType.text,
       borderColor: borderColor,
       obscureText: true,
+      labelStyle: labelStyle,
       enableRealTimeValidation: enableRealTimeValidation,
       validator:
           validator ??

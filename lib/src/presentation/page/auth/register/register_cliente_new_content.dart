@@ -195,41 +195,31 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
         children: [
           Expanded(
             flex: 2,
-            child: CustomTextField(
-              label: 'DNI',
-              hintText: 'Digite su de DNI',
-              controller: _dniController,
+            child: CustomTextFieldHelpers.dni(
+              label: 'DNI', 
               borderColor: AppColors.blue,
-              fieldType: FieldType.dni,
-              onChanged: (text) {
-                widget.bloc?.add(
-                  DniSearchChanged(dni: BlocFormItem(value: text)),
-                );
-              },
-              validator: (value) {
-                if (value?.isEmpty ?? true) return 'DNI requerido';
-                if (value!.length != 8) return 'DNI debe tener 8 dígitos';
-                return null;
-              },
+              hintText: 'Digite su de DNI',
+              labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 11),
+              controller: _dniController,
+              onChanged: (text){
+                widget.bloc?.add(DniSearchChanged(dni: BlocFormItem(value: text)));
+              }
             ),
           ),
           const SizedBox(width: 15),
           Expanded(
             flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: CustomButton(
-                backgroundColor: AppColors.blue,
-                borderColor: AppColors.blue,
-                textColor: AppColors.white,
-                enableShadows: false,
-                text: 'Consultar DNI',
-                onPressed: widget.state.isConsultingDni
-                    ? null
-                    : () {
-                        widget.bloc?.add(const ConsultarDniPressed());
-                      },
-              ),
+            child: CustomButton(
+              backgroundColor: AppColors.blue,
+              borderColor: AppColors.blue,                
+              enableShadows: false,
+              text: 'Consultar DNI',
+              textStyle: AppFont.orbitronMedium.style(color: AppColors.white, fontSize: 12),
+              onPressed: widget.state.isConsultingDni
+                  ? null
+                  : () {
+                      widget.bloc?.add(const ConsultarDniPressed());
+                    },
             ),
           ),
         ],
@@ -247,6 +237,8 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
               child: CustomTextField(
                 controller: _apellidoPaternoController,
                 label: 'Apellido Paterno',
+                enableRealTimeValidation: false,
+                labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 11),
                 borderColor: AppColors.blue,
                 enabled: false,
                 prefixIcon: const Icon(
@@ -259,7 +251,9 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
             Expanded(
               child: CustomTextField(
                 controller: _apellidoMaternoController,
+                labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 11),
                 label: 'Apellido Materno',
+                enableRealTimeValidation: false,
                 borderColor: AppColors.blue,
                 enabled: false,
                 prefixIcon: const Icon(
@@ -277,6 +271,8 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
         CustomTextField(
           controller: _nombresController,
           label: 'Nombres',
+          enableRealTimeValidation: false,
+          labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 12),
           borderColor: AppColors.blue,
           enabled: false,
           prefixIcon: const Icon(Icons.person_outline, color: AppColors.blue),
@@ -287,7 +283,9 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
         // Departamento
         CustomTextField(
           controller: _departamentoController,
+          labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 12),
           label: 'Departamento',
+          enableRealTimeValidation: false,
           borderColor: AppColors.blue,
           enabled: false,
           prefixIcon: const Icon(
@@ -304,7 +302,9 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
             Expanded(
               child: CustomTextField(
                 controller: _provinciaController,
+                labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 12),
                 label: 'Provincia',
+                enableRealTimeValidation: false,
                 borderColor: AppColors.blue,
                 enabled: false,
                 prefixIcon: const Icon(
@@ -317,7 +317,9 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
             Expanded(
               child: CustomTextField(
                 controller: _distritoController,
+                labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 12),
                 label: 'Distrito',
+                enableRealTimeValidation: false,
                 borderColor: AppColors.blue,
                 enabled: false,
                 prefixIcon: const Icon(
@@ -334,7 +336,9 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
         // Dirección
         CustomTextField(
           controller: _direccionController,
+          labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 12),
           label: 'Dirección',
+          enableRealTimeValidation: false,
           borderColor: AppColors.blue,
           enabled: false,
           prefixIcon: const Icon(
@@ -350,43 +354,22 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
     return Column(
       children: [
         // Email
-        CustomTextField(
+        CustomTextFieldHelpers.email(
+          label: 'Email', 
           controller: _emailController,
-          label: 'Email',
           borderColor: AppColors.blue,
-          keyboardType: TextInputType.emailAddress,
-          prefixIcon: const Icon(Icons.email_outlined, color: AppColors.blue),
-          onChanged: (text) {
+          labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 12),
+          onChanged: (text){
             widget.bloc?.add(EmailChanged(email: BlocFormItem(value: text)));
-          },
-          validator: (value) {
-            if (value?.isEmpty ?? true) return 'Email requerido';
-            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value!)) {
-              return 'Email inválido';
-            }
-            return null;
-          },
+          }
         ),
 
         const SizedBox(height: 16),
 
         // Teléfono
-        // CustomTextField(
-        //   controller: _phoneController,
-        //   label: 'Teléfono',
-        //   borderColor: AppColors.blue,
-        //   keyboardType: TextInputType.phone,
-        //   prefixIcon: const Icon(Icons.phone_outlined, color: AppColors.blue),
-          // onChanged: (text) {
-          //   widget.bloc?.add(PhoneChanged(phone: BlocFormItem(value: text)));
-          // },
-        //   validator: (value) {
-        //     if (value?.isEmpty ?? true) return 'Teléfono requerido';
-        //     return null;
-        //   },
-        // ),
         CustomTextFieldHelpers.phone(
           label: 'Teléfono',
+          labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 12),
           controller: _phoneController,
           borderColor: AppColors.blue,
           onChanged: (text) {
@@ -396,23 +379,15 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
 
         const SizedBox(height: 16),
 
-        // Contraseña
-        CustomTextField(
+        // Contraseña        
+        CustomTextFieldHelpers.password(
+          label: 'Contraseña', 
+          labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 12),
           controller: _passwordController,
-          label: 'Contraseña',
           borderColor: AppColors.blue,
-          obscureText: true,
-          prefixIcon: const Icon(Icons.lock_outlined, color: AppColors.blue),
-          onChanged: (text) {
-            widget.bloc?.add(
-              PasswordChanged(password: BlocFormItem(value: text)),
-            );
-          },
-          validator: (value) {
-            if (value?.isEmpty ?? true) return 'Contraseña requerida';
-            if (value!.length < 8) return 'Mínimo 8 caracteres';
-            return null;
-          },
+          onChanged: (text){
+            widget.bloc?.add(PasswordChanged(password: BlocFormItem(value: text)));
+          }
         ),
 
         const SizedBox(height: 16),
@@ -420,16 +395,12 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
         // Confirmar contraseña
         CustomTextField(
           controller: _confirmPasswordController,
+          labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 12),
           label: 'Confirmar Contraseña',
           borderColor: AppColors.blue,
           obscureText: true,
           prefixIcon: const Icon(Icons.lock_outlined, color: AppColors.blue),
-          onChanged: (text) {
-            widget.bloc?.add(
-              ConfirmPasswordChanged(
-                confirmPassword: BlocFormItem(value: text),
-              ),
-            );
+          onChanged: (text) {widget.bloc?.add(ConfirmPasswordChanged(confirmPassword: BlocFormItem(value: text)));
           },
           validator: (value) {
             if (value?.isEmpty ?? true) return 'Confirme su contraseña';
@@ -510,10 +481,6 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
           : () {
               if (widget.state.formKey!.currentState!.validate()) {
                 if (!widget.state.acceptTerms) {
-                  // Fluttertoast.showToast(
-                  //   msg: 'Debe aceptar los términos y condiciones',
-                  //   toastLength: Toast.LENGTH_LONG,
-                  // );
                   SnackBarHelper.showWarning(
                     context,
                     'Debe aceptar los términos y condiciones',
@@ -522,10 +489,6 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
                 }
                 widget.bloc?.add(const RegisterNewSubmitted());
               } else {
-                // Fluttertoast.showToast(
-                //   msg: 'Complete todos los campos correctamente',
-                //   toastLength: Toast.LENGTH_LONG,
-                // );
                 SnackBarHelper.showWarning(
                   context,
                   'Complete todos los campos correctamente',

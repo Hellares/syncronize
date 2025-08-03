@@ -5,4 +5,5 @@ import 'package:syncronize/injection.config.dart';
 final locator = GetIt.instance;
 
 @InjectableInit()
+// ignore: await_only_futures
 Future<void> configureDependencies() async => await locator.init();

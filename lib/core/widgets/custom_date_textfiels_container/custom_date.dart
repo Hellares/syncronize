@@ -707,6 +707,7 @@ class _CustomDateState extends State<CustomDate>
                           fontWeight: FontWeight.w400,
                           height: 1.2,
                         ),
+                        
                     decoration: InputDecoration(
                       isDense: true,
                       hintText: widget.hintText ?? _getHintByFormat(),
