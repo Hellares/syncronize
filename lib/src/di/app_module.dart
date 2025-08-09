@@ -7,6 +7,7 @@ import 'package:syncronize/src/domain/repository/auth_repository.dart';
 import 'package:syncronize/src/domain/repository/reniec_repository.dart';
 import 'package:syncronize/src/domain/use_cases/auth/auth_use_cases.dart';
 import 'package:syncronize/src/domain/use_cases/auth/login_use_case.dart';
+import 'package:syncronize/src/domain/use_cases/auth/register_use_case.dart';
 import 'package:syncronize/src/domain/use_cases/reniec/get_data_dni_reniec_use_case.dart';
 import 'package:syncronize/src/domain/use_cases/reniec/reniec_use_cases.dart';
 
@@ -28,6 +29,7 @@ abstract class AppModule {
   @injectable
   AuthUseCases get authUseCases => AuthUseCases(
         login: LoginUseCase(authRepository),
+        register: RegisterUseCase(authRepository)
       );
 
   @injectable

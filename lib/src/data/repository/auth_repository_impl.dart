@@ -1,7 +1,8 @@
 
 import 'package:syncronize/src/data/datasource/remote/service/auth_service.dart';
 import 'package:syncronize/src/domain/models/auth_response.dart';
-import 'package:syncronize/src/domain/models/user.dart';
+import 'package:syncronize/src/domain/models/auth_response_register_new.dart';
+import 'package:syncronize/src/domain/models/user_register_new.dart';
 import 'package:syncronize/src/domain/repository/auth_repository.dart';
 import 'package:syncronize/src/domain/utils/resource.dart';
 
@@ -18,9 +19,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Resource<AuthResponse>> register(User user) {
+  Future<Resource<AuthResponseRegisterNew>> register(UserRegisterNew user) {
 
-    throw UnimplementedError();
+    return authService.register(user);
   }
   
   

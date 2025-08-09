@@ -41,7 +41,7 @@ class AppGradients {
     stops: [0.0, 0.8, 1.0],
   );
 
- static const Gradient blueWhiteBlue = LinearGradient(
+ static LinearGradient blueWhiteBlue() => const LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [

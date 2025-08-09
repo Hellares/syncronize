@@ -4,6 +4,7 @@ class UserRegisterNew {
   final String nombres;
   final String apellidoPaterno;
   final String apellidoMaterno;
+  final String? nombreCompleto;
   final String departamento;
   final String provincia;
   final String distrito;
@@ -17,6 +18,7 @@ class UserRegisterNew {
     required this.nombres,
     required this.apellidoPaterno,
     required this.apellidoMaterno,
+    required this.nombreCompleto,
     required this.departamento,
     required this.provincia,
     required this.distrito,
@@ -29,33 +31,36 @@ class UserRegisterNew {
   factory UserRegisterNew.fromJson(Map<String, dynamic> json) => UserRegisterNew(
         dni: json["dni"],
         nombres: json["nombres"],
-        apellidoPaterno: json["apellido_paterno"],
-        apellidoMaterno: json["apellido_materno"],
+        apellidoPaterno: json["apellidoPaterno"],
+        apellidoMaterno: json["apellidoMaterno"],
+        nombreCompleto: json["nombreCompleto"],
         departamento: json["departamento"],
         provincia: json["provincia"],
         distrito: json["distrito"],
         direccion: json["direccion"],
         email: json["email"],
-        phone: json["phone"],
+        phone: json["telefono"],
         password: json["password"] ?? '',
       );
 
+  //Firma para enviar a la API
   Map<String, dynamic> toJson() => {
         "dni": dni,
         "nombres": nombres,
-        "apellido_paterno": apellidoPaterno,
-        "apellido_materno": apellidoMaterno,
+        "apellidoPaterno": apellidoPaterno,
+        "apellidoMaterno": apellidoMaterno,
+        "nombresCompletos": nombreCompleto,
         "departamento": departamento,
         "provincia": provincia,
         "distrito": distrito,
-        "direccion": direccion,
+        "direccionCompleta": direccion,
         "email": email,
-        "phone": phone,
+        "telefono": phone,
         "password": password,
       };
 
   // Getters para compatibilidad con implementación anterior si es necesario
-  String get name => nombres;
-  String get lastname => '$apellidoPaterno $apellidoMaterno';
-  String get fullName => '$nombres $apellidoPaterno $apellidoMaterno';
+  // String get name => nombres;
+  // String get lastname => '$apellidoPaterno $apellidoMaterno';
+  // String get fullName => '$nombres $apellidoPaterno $apellidoMaterno';
 }

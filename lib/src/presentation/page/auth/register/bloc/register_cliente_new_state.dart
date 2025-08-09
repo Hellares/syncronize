@@ -11,6 +11,7 @@ class RegisterClienteNewState extends Equatable {
   final BlocFormItem nombres;
   final BlocFormItem apellidoPaterno;
   final BlocFormItem apellidoMaterno;
+  final BlocFormItem nombreCompleto;
   final BlocFormItem departamento;
   final BlocFormItem provincia;
   final BlocFormItem distrito;
@@ -30,6 +31,7 @@ class RegisterClienteNewState extends Equatable {
     this.nombres = const BlocFormItem(error: 'Nombres requeridos'),
     this.apellidoPaterno = const BlocFormItem(error: 'Apellido paterno requerido'),
     this.apellidoMaterno = const BlocFormItem(error: 'Apellido materno requerido'),
+    this.nombreCompleto = const BlocFormItem(error: 'Nombre Completo requerido'),
     this.departamento = const BlocFormItem(error: 'Departamento requerido'),
     this.provincia = const BlocFormItem(error: 'Provincia requerida'),
     this.distrito = const BlocFormItem(error: 'Distrito requerido'),
@@ -50,6 +52,7 @@ class RegisterClienteNewState extends Equatable {
         nombres: nombres.value,
         apellidoPaterno: apellidoPaterno.value,
         apellidoMaterno: apellidoMaterno.value,
+        nombreCompleto: nombreCompleto.value,
         departamento: departamento.value,
         provincia: provincia.value,
         distrito: distrito.value,
@@ -64,6 +67,7 @@ class RegisterClienteNewState extends Equatable {
     BlocFormItem? nombres,
     BlocFormItem? apellidoPaterno,
     BlocFormItem? apellidoMaterno,
+    BlocFormItem? nombreCompleto,
     BlocFormItem? departamento,
     BlocFormItem? provincia,
     BlocFormItem? distrito,
@@ -83,6 +87,7 @@ class RegisterClienteNewState extends Equatable {
       nombres: nombres ?? this.nombres,
       apellidoPaterno: apellidoPaterno ?? this.apellidoPaterno,
       apellidoMaterno: apellidoMaterno ?? this.apellidoMaterno,
+      nombreCompleto: nombreCompleto ?? this.nombreCompleto,
       departamento: departamento ?? this.departamento,
       provincia: provincia ?? this.provincia,
       distrito: distrito ?? this.distrito,
@@ -105,6 +110,7 @@ class RegisterClienteNewState extends Equatable {
         nombres,
         apellidoPaterno,
         apellidoMaterno,
+        nombreCompleto,
         departamento,
         provincia,
         distrito,

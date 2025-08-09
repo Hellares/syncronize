@@ -1,4 +1,3 @@
-// src/presentation/pages/auth/register_new/bloc/register_cliente_new_bloc.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncronize/src/domain/models/sunat_response_new.dart';
@@ -24,7 +23,7 @@ class RegisterClienteNewBloc extends Bloc<RegisterClienteNewEvent, RegisterClien
     on<PasswordChanged>(_onPasswordChanged);
     on<ConfirmPasswordChanged>(_onConfirmPasswordChanged);
     on<AcceptTermsChanged>(_onAcceptTermsChanged);
-    // on<RegisterNewSubmitted>(_onRegisterSubmitted);
+    on<RegisterNewSubmitted>(_onRegisterSubmitted);
     on<FormNewReset>(_onFormReset);
     on<ClearAllStates>(_onClearAllStates);
   }
@@ -43,6 +42,7 @@ class RegisterClienteNewBloc extends Bloc<RegisterClienteNewEvent, RegisterClien
       nombres: const BlocFormItem(value: ''),
       apellidoPaterno: const BlocFormItem(value: ''),
       apellidoMaterno: const BlocFormItem(value: ''),
+      nombreCompleto: const BlocFormItem(value: ''),
       departamento: const BlocFormItem(value: ''),
       provincia: const BlocFormItem(value: ''),
       distrito: const BlocFormItem(value: ''),
@@ -75,6 +75,7 @@ class RegisterClienteNewBloc extends Bloc<RegisterClienteNewEvent, RegisterClien
           nombres: BlocFormItem(value: data.nombres),
           apellidoPaterno: BlocFormItem(value: data.apellidoPaterno),
           apellidoMaterno: BlocFormItem(value: data.apellidoMaterno),
+          nombreCompleto: BlocFormItem(value: data.nombreCompleto),
           departamento: BlocFormItem(value: data.departamento),
           provincia: BlocFormItem(value: data.provincia),
           distrito: BlocFormItem(value: data.distrito),
@@ -136,50 +137,67 @@ class RegisterClienteNewBloc extends Bloc<RegisterClienteNewEvent, RegisterClien
     emit(state.copyWith(acceptTerms: event.acceptTerms));
   }
 
-  // Future<void> _onRegisterSubmitted(RegisterNewSubmitted event, Emitter<RegisterClienteNewState> emit) async {
-  //   if (!state.acceptTerms) {
-  //     emit(state.copyWith(response: Error('Debe aceptar los términos y condiciones')));
-  //     return;
-  //   }
+  Future<void> _onRegisterSubmitted(RegisterNewSubmitted event, Emitter<RegisterClienteNewState> emit) async {
+    if (!state.acceptTerms) {
+      emit(state.copyWith(response: Error('Debe aceptar los términos y condiciones')));
+      return;
+    }
 
-  //   // Validar que todos los campos estén completos
-  //   if (state.dni.value.isEmpty || 
-  //       state.nombres.value.isEmpty || 
-  //       state.apellidoPaterno.value.isEmpty ||
-  //       state.apellidoMaterno.value.isEmpty ||
-  //       state.email?.value.isEmpty == true ||
-  //       state.phone?.value.isEmpty == true ||
-  //       state.password.value.isEmpty) {
-  //     emit(state.copyWith(response: Error('Todos los campos son obligatorios')));
-  //     return;
-  //   }
+    // Validar que todos los campos estén completos
+    if (state.dni.value.isEmpty || 
+        state.nombres.value.isEmpty || 
+        state.apellidoPaterno.value.isEmpty ||
+        state.apellidoMaterno.value.isEmpty ||
+        state.email?.value.isEmpty == true ||
+        state.phone?.value.isEmpty == true ||
+        state.password.value.isEmpty) {
+      emit(state.copyWith(response: Error('Todos los campos son obligatorios')));
+      return;
+    }
 
-  //   emit(state.copyWith(
-  //     isRegistering: true,
-  //     response: Loading(),
-  //   ));
+    emit(state.copyWith(
+      isRegistering: true,
+      response: Loading(),
+    ));
 
-  //   try {
-  //     final result = await authUseCases.register.run(state.toUserRegister());
+    try {
+      // // Debug: Imprimir valores del estado antes del registro
+      final userToRegister = state.toUserRegister();
+      // print('=== DEBUG REGISTRO ===');
+      // print('DNI: ${userToRegister.dni}');
+      // print('Nombres: ${userToRegister.nombres}');
+      // print('Apellido Paterno: ${userToRegister.apellidoPaterno}');
+      // print('Apellido Materno: ${userToRegister.apellidoMaterno}');
+      // print('Nombre Completo: ${userToRegister.nombreCompleto}');
+      // print('Departamento: ${userToRegister.departamento}');
+      // print('Provincia: ${userToRegister.provincia}');
+      // print('Distrito: ${userToRegister.distrito}');
+      // print('Dirección: ${userToRegister.direccion}');
+      // print('Email: ${userToRegister.email}');
+      // print('Phone: ${userToRegister.phone}');
+      // print('Password: ${userToRegister.password}');
+      // print('=====================');
       
-  //     if (result is Success) {
-  //       emit(state.copyWith(
-  //         isRegistering: false,
-  //         response: result,
-  //       ));
-  //     } else if (result is Error) {
-  //       emit(state.copyWith(
-  //         isRegistering: false,
-  //         response: result,
-  //       ));
-  //     }
-  //   } catch (e) {
-  //     emit(state.copyWith(
-  //       isRegistering: false,
-  //       response: Error('Error al registrar usuario: $e'),
-  //     ));
-  //   }
-  // }
+      final result = await authUseCases.register.run(userToRegister);
+      
+      if (result is Success) {
+        emit(state.copyWith(
+          isRegistering: false,
+          response: result,
+        ));
+      } else if (result is Error) {
+        emit(state.copyWith(
+          isRegistering: false,
+          response: result,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        isRegistering: false,
+        response: Error('Error al registrar usuario: $e'),
+      ));
+    }
+  }
 
   Future<void> _onFormReset(FormNewReset event, Emitter<RegisterClienteNewState> emit) async {
     formKey.currentState?.reset();
@@ -200,7 +218,6 @@ class RegisterClienteNewBloc extends Bloc<RegisterClienteNewEvent, RegisterClien
     if (password.length < 8) return 'Mínimo 8 caracteres';
     return null;
   }
-  
 
   Future<void> _onClearAllStates(ClearAllStates event, Emitter<RegisterClienteNewState> emit) async {
     emit(const RegisterClienteNewState());

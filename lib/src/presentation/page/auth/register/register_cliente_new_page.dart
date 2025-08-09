@@ -1,8 +1,8 @@
-// src/presentation/pages/auth/register_new/register_cliente_new_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncronize/core/fonts/app_fonts.dart';
 import 'package:syncronize/core/theme/app_colors.dart';
+import 'package:syncronize/core/theme/gradient_container.dart';
 import 'package:syncronize/core/widgets/appbar/custom_appbar.dart';
 import 'package:syncronize/core/widgets/loadings/custom_loading.dart';
 import 'package:syncronize/core/widgets/snack.dart';
@@ -41,7 +41,8 @@ class _RegisterClienteNewPageState extends State<RegisterClienteNewPage> {
     _bloc = BlocProvider.of<RegisterClienteNewBloc>(context);
     
     return Scaffold(
-      backgroundColor: Colors.white,
+      extendBodyBehindAppBar: true, // Extiende el body detrás del AppBar
+      // backgroundColor: Colors.transparent, // Fondo transparente del Scaffold
       appBar: CustomAppBar(
         title: 'Crear Cuenta',
         centerTitle: false,
@@ -50,42 +51,49 @@ class _RegisterClienteNewPageState extends State<RegisterClienteNewPage> {
           fontSize: 10,
           color: AppColors.blue2,
         ),
+        // Si tu CustomAppBar no maneja la transparencia, puedes necesitar:
+        // backgroundColor: Colors.transparent,
+        // elevation: 0,
       ),
-      body: BlocListener<RegisterClienteNewBloc, RegisterClienteNewState>(
-        listenWhen: (previous, current) {
-          // Solo escuchar cuando el response cambie y no sea null
-          return previous.response != current.response && current.response != null;
-        },
-        listener: (context, state) {
-          final responseState = state.response;
-          
-          if (responseState is Error) {
-            SnackBarHelper.showError(context, responseState.message);
-          } else if (responseState is Success<AuthResponseRegisterNew>) {
-            SnackBarHelper.showSuccess(context, '¡Cuenta creada exitosamente!');
-            // Navegar al login o dashboard
-            Navigator.of(context).pop();
-          }
-        },
-        child: BlocBuilder<RegisterClienteNewBloc, RegisterClienteNewState>(
-          builder: (context, state) {
-            // final responseState = state.response;
-            
-            return Stack(
-              children: [
-                RegisterClienteNewContent(_bloc, state),
-                // if (state.isConsultingDni || state.isRegistering)
-                //   Container(
-                //     color: Colors.black26,
-                //     child: const Center(
-                //       child: CircularProgressIndicator(),
-                //     ),
-                //   ),
-                if (state.isRegistering )
-                  CustomLoading.registering()
-              ],
-            );
-          },
+      body: GradientContainer(
+        child: SafeArea(
+          child: BlocListener<RegisterClienteNewBloc, RegisterClienteNewState>(
+            listenWhen: (previous, current) {
+              // Solo escuchar cuando el response cambie y no sea null
+              return previous.response != current.response && current.response != null;
+            },
+            listener: (context, state) {
+              final responseState = state.response;
+              
+              if (responseState is Error) {
+                SnackBarHelper.showError(context, responseState.message);
+              } else if (responseState is Success<AuthResponseRegisterNew>) {
+                SnackBarHelper.showSuccess(context, '¡Cuenta creada exitosamente!');
+                // Navegar al login o dashboard
+                Navigator.of(context).pop();
+              }
+            },
+            child: BlocBuilder<RegisterClienteNewBloc, RegisterClienteNewState>(
+              builder: (context, state) {
+                // final responseState = state.response;
+                
+                return Stack(
+                  children: [
+                    RegisterClienteNewContent(_bloc, state),
+                    // if (state.isConsultingDni || state.isRegistering)
+                    //   Container(
+                    //     color: Colors.black26,
+                    //     child: const Center(
+                    //       child: CircularProgressIndicator(),
+                    //     ),
+                    //   ),
+                    if (state.isRegistering )
+                      CustomLoading.registering()
+                  ],
+                );
+              },
+            ),
+          ),
         ),
       ),
     );
