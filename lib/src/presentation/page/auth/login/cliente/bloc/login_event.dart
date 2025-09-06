@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:syncronize/src/domain/models/auth_response.dart';
+import 'package:syncronize/src/domain/models/auth_empresa_response.dart';
 import 'package:syncronize/src/presentation/utils/bloc_form_item.dart';
 
 abstract class LoginEvent extends Equatable{
@@ -18,7 +18,7 @@ class LoginFormReset extends LoginEvent {
 }
 
 class LoginSaveUserSession extends LoginEvent {
-  final AuthResponse authResponse;
+  final AuthEmpresaResponse authResponse;
   const LoginSaveUserSession({ required this.authResponse});
 
   @override
@@ -41,5 +41,9 @@ class PasswordChanged extends LoginEvent {
 
 class LoginSubmit extends LoginEvent {
   const LoginSubmit();
+}
+
+class ClearError extends LoginEvent {
+  const ClearError();
 }
 

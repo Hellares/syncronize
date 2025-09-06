@@ -1,40 +1,55 @@
 
 import 'dart:convert';
+// import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
+// import 'package:logger/logger.dart';
+import 'package:syncronize/core/network/interceptors/base_service.dart';
 import 'package:syncronize/src/data/api/api_config.dart';
-import 'package:syncronize/src/domain/models/auth_response.dart';
+import 'package:syncronize/src/domain/models/auth_empresa_response.dart';
+// import 'package:syncronize/src/domain/models/backend_error_response.dart';
 import 'package:syncronize/src/domain/models/auth_response_register_new.dart';
 import 'package:syncronize/src/domain/models/user_register_new.dart';
 import 'package:syncronize/src/domain/utils/list_to_string.dart';
 import 'package:syncronize/src/domain/utils/resource.dart';
 
-class AuthService {
-  Future<Resource<AuthResponse>> login(String dni, String password) async {
-    try {
-      // Uri  url = Uri.http(ApiConfig.baseUrl, 'api/auth/login');
-      Uri url = ApiConfig.getUri('api/auth/login');
-      Map<String, String> headers = {
-        'Content-Type': 'application/json',
-      };
-      String body = json.encode({
+class AuthService extends BaseService {
+
+
+
+  Future<Resource<AuthEmpresaResponse>> login(String dni, String password) async {
+    // Validaciones locales
+    if (dni.isEmpty || password.isEmpty) {
+      logger.w('DNI o contraseña vacíos');
+      return Error<AuthEmpresaResponse>(
+        'DNI y contraseña son requeridos',
+        statusCode: 400,
+        errorCode: 'VALIDATION_ERROR',
+      );
+    }
+    
+    if (!RegExp(r'^\d{8}$').hasMatch(dni)) {
+      logger.w('DNI inválido: $dni');
+      return Error<AuthEmpresaResponse>(
+        'El DNI debe tener 8 dígitos',
+        statusCode: 400,
+        errorCode: 'VALIDATION_ERROR',
+      );
+    }
+
+   
+    // Usar el método base para manejar la respuesta
+    return handleResponse<AuthEmpresaResponse>(
+      request: () => dio.post('/api/auth/login', data: {
         'dni': dni,
         'password': password,
-      });
-      final response = await http.post(url, headers: headers, body: body);
-      final data = json.decode(response.body);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        AuthResponse authResponse = AuthResponse.fromJson(data);
-        // print(authResponse.toJson());
-        return Success(authResponse);
-        
-      } else {
-        return Error(listToString(data['message']));
-      }
-      
-    } catch (e) {
-      return Error(e.toString());
-    }
+      }),
+      fromJson: (json) => AuthEmpresaResponse.fromJson(json),
+      entityName: 'Login',
+    );
   }
+
+
+
 
   Future<Resource<AuthResponseRegisterNew>> register(UserRegisterNew user) async {
     try{
@@ -56,6 +71,4 @@ class AuthService {
       return Error(e.toString());
     }
   }
-
-  
 }

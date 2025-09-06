@@ -12,8 +12,8 @@ class LoginState extends Equatable{
   final GlobalKey<FormState>? formKey;
 
   const LoginState({
-    this.dni = const BlocFormItem(error: 'DNI requerido'),
-    this.password = const BlocFormItem(error: 'Ingrese su contraseña'),
+    this.dni = const BlocFormItem(value: '', error: null), // ← Sin error inicial
+    this.password = const BlocFormItem(value: '', error: null), // ← Sin error inicial
     this.response,
     this.formKey,
   });

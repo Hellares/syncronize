@@ -375,13 +375,15 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
 
         // Teléfono
         CustomTextFieldHelpers.phone(
+          // filled: false,
           label: 'Teléfono',
           labelStyle: AppFont.oxygenRegular.style(color: AppColors.blue2, fontSize: 12),
           controller: _phoneController,
           borderColor: AppColors.blue,
+          // borderColor: AppColors.white,
           onChanged: (text) {
             widget.bloc?.add(PhoneChanged(phone: BlocFormItem(value: text)));
-          },
+          },          
         ),
 
         const SizedBox(height: 16),
@@ -480,9 +482,9 @@ class _RegisterClienteNewContentState extends State<RegisterClienteNewContent> {
       backgroundColor: AppColors.blue,
       borderColor: AppColors.blue,
       textColor: AppColors.white,
-      textStyle: AppFont.airstrikeBold3d.style(fontSize: 16),
+      textStyle: AppFont.pirulentBold.style(fontSize: 12),
       borderWidth: 0,
-      // sizeFont: 16,
+      borderRadius: 20,
       onPressed: widget.state.isRegistering
           ? null
           : () {

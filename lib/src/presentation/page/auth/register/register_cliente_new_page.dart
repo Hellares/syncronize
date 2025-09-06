@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncronize/core/fonts/app_fonts.dart';
 import 'package:syncronize/core/theme/app_colors.dart';
+import 'package:syncronize/core/theme/app_gradients.dart';
 import 'package:syncronize/core/theme/gradient_container.dart';
 import 'package:syncronize/core/widgets/appbar/custom_appbar.dart';
 import 'package:syncronize/core/widgets/loadings/custom_loading.dart';
@@ -56,6 +57,7 @@ class _RegisterClienteNewPageState extends State<RegisterClienteNewPage> {
         // elevation: 0,
       ),
       body: GradientContainer(
+        gradient: AppGradients.blueWhiteBlue(),
         child: SafeArea(
           child: BlocListener<RegisterClienteNewBloc, RegisterClienteNewState>(
             listenWhen: (previous, current) {

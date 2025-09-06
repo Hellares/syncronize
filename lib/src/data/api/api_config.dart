@@ -1,6 +1,6 @@
 class ApiConfig{
   static const String localApi = "192.168.100.3:3000";
-  static const String productionApi = 'bdcetiv2-production.up.railway.app';
+  static const String productionApi = 'api-gateway.syncronize.net.pe';
   
   static bool isProduction = false;
 
