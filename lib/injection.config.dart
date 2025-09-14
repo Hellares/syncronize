@@ -35,29 +35,43 @@ import 'package:syncronize/src/domain/use_cases/reniec/reniec_use_cases.dart'
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
-  Future<_i174.GetIt> init({
+  _i174.GetIt init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
-  }) async {
+  }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
-    gh.singleton<_i361.Dio>(() => appModule.dio());
-    gh.singleton<_i16.SecureStorage>(() => appModule.secureStorage());
-    await gh.singletonAsync<String>(() => appModule.token(), preResolve: true);
-    gh.singleton<_i29.AuthService>(() => appModule.authService());
-    gh.singleton<_i304.ReniecService>(() => appModule.reniecService());
-    gh.singleton<_i101.EmpresaUserRolesService>(
+    gh.factory<_i304.ReniecService>(() => appModule.reniecService());
+    gh.factory<_i101.EmpresaUserRolesService>(
       () => appModule.empresaUserRolesService(),
     );
-    gh.singleton<_i542.AuthRepository>(() => appModule.authRepository());
-    gh.singleton<_i860.ReniecRepository>(() => appModule.reniecRepository());
+    gh.singleton<_i361.Dio>(() => appModule.dio());
+    gh.singleton<_i16.SecureStorage>(() => appModule.secureStorage());
     gh.singleton<_i91.EmpresaUserRolesRepository>(
-      () => appModule.empresaUserRolesRepository(),
+      () => appModule.empresaUserRolesRepository(
+        gh<_i101.EmpresaUserRolesService>(),
+      ),
     );
-    gh.singleton<_i736.AuthUseCases>(() => appModule.authUseCases());
-    gh.singleton<_i792.ReniecUseCases>(() => appModule.reniecUseCases());
+    gh.factory<_i29.AuthService>(() => appModule.authService(gh<_i361.Dio>()));
     gh.singleton<_i303.EmpresaUserRolesUseCases>(
-      () => appModule.empresaUserRolesUseCases(),
+      () => appModule.empresaUserRolesUseCases(
+        gh<_i91.EmpresaUserRolesRepository>(),
+      ),
+    );
+    gh.singleton<_i542.AuthRepository>(
+      () => appModule.authRepository(
+        gh<_i29.AuthService>(),
+        gh<_i16.SecureStorage>(),
+      ),
+    );
+    gh.singleton<_i860.ReniecRepository>(
+      () => appModule.reniecRepository(gh<_i304.ReniecService>()),
+    );
+    gh.singleton<_i736.AuthUseCases>(
+      () => appModule.authUseCases(gh<_i542.AuthRepository>()),
+    );
+    gh.singleton<_i792.ReniecUseCases>(
+      () => appModule.reniecUseCases(gh<_i860.ReniecRepository>()),
     );
     return this;
   }

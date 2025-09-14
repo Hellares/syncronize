@@ -1,19 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:syncronize/src/data/api/dio_config.dart'; // ✅ Importar DioConfig
 import 'package:syncronize/src/domain/models/empresa_user_roles_response.dart';
 import 'package:syncronize/src/domain/utils/resource.dart';
 
 class EmpresaUserRolesService {
+  final Dio _dio;
 
-  late Dio _dio;
-
-  EmpresaUserRolesService(){
-    _dio = Dio(BaseOptions(
-      baseUrl:'http://192.168.100.3:3000',
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-    ));
-  }
-
+  // ✅ FIX: Usar DioConfig en lugar de hardcodear URL
+  EmpresaUserRolesService() : _dio = DioConfig.instance;
 
   Future<Resource<EmpresaUserRolesResponse>> getUserEmpresasRoles(String token) async {
     try {

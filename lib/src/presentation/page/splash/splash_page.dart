@@ -1,4 +1,3 @@
-// lib/src/presentation/page/splash/splash_page.dart
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:syncronize/injection.dart';
@@ -19,6 +18,8 @@ class _SplashPageState extends State<SplashPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  
+  String _statusText = 'Inicializando...';
 
   @override
   void initState() {
@@ -52,6 +53,14 @@ class _SplashPageState extends State<SplashPage>
     _animationController.forward();
   }
 
+  void _updateStatus(String status) {
+    if (mounted) {
+      setState(() {
+        _statusText = status;
+      });
+    }
+  }
+
   Future<void> _initializeApp() async {
     Stopwatch? totalStopwatch;
     if (kDebugMode) {
@@ -60,7 +69,9 @@ class _SplashPageState extends State<SplashPage>
     }
     
     try {
-      // 1. Configurar dependencias
+      // 1. Configurar dependencias en background
+      _updateStatus('Configurando dependencias...');
+      
       Stopwatch? dependenciesStopwatch;
       if (kDebugMode) {
         dependenciesStopwatch = Stopwatch()..start();
@@ -74,52 +85,35 @@ class _SplashPageState extends State<SplashPage>
         print('✅ Dependencias configuradas en ${dependenciesStopwatch?.elapsedMilliseconds}ms');
       }
       
-      // 2. Inicializar Dio
-      Stopwatch? dioStopwatch;
-      if (kDebugMode) {
-        dioStopwatch = Stopwatch()..start();
-        print('🌐 Inicializando cliente HTTP...');
-      }
+      // 2. Inicializar servicios básicos en paralelo
+      _updateStatus('Inicializando servicios...');
       
-      DioConfig.instance; // Esto inicializa Dio
+      await Future.wait([
+        _initializeDio(),
+        _initializeStorage(),
+      ]);
       
-      if (kDebugMode) {
-        dioStopwatch?.stop();
-        print('✅ Dio inicializado en ${dioStopwatch?.elapsedMilliseconds}ms');
-      }
-      
-      // 3. Pre-cargar SharedPreferences
-      Stopwatch? prefsStopwatch;
-      if (kDebugMode) {
-        prefsStopwatch = Stopwatch()..start();
-        print('💾 Verificando almacenamiento local...');
-      }
-      
-      final secureStorage = SecureStorage();
-      await secureStorage.read('user'); // Pre-carga las preferencias
-      
-      if (kDebugMode) {
-        prefsStopwatch?.stop();
-        print('✅ Almacenamiento verificado en ${prefsStopwatch?.elapsedMilliseconds}ms');
-      }
-      
-      // 4. Esperar mínimo para mostrar splash completo (solo en debug)
-      final minSplashTime = kDebugMode ? 2000 : 1000; // 1s en producción, 2s en debug
+      // 3. Tiempo mínimo para UX (solo en debug)
+      final minSplashTime = kDebugMode ? 1500 : 800; // Reducido
       final elapsed = totalStopwatch?.elapsedMilliseconds ?? 0;
       final remainingTime = minSplashTime - elapsed;
       
       if (remainingTime > 0) {
+        _updateStatus('Preparando interfaz...');
         if (kDebugMode) print('⏳ Esperando ${remainingTime}ms para completar splash...');
         await Future.delayed(Duration(milliseconds: remainingTime));
       }
       
-      // 5. Verificar sesión activa
+      // 4. Verificar sesión activa
+      _updateStatus('Verificando sesión...');
+      
       Stopwatch? sessionStopwatch;
       if (kDebugMode) {
         sessionStopwatch = Stopwatch()..start();
         print('🔍 Verificando sesión de usuario...');
       }
       
+      final secureStorage = SecureStorage();
       final userData = await secureStorage.read('user');
       
       if (kDebugMode) {
@@ -131,7 +125,11 @@ class _SplashPageState extends State<SplashPage>
       
       if (!mounted) return;
       
-      // 6. Navegar según estado de sesión
+      // 5. Navegar según estado de sesión
+      _updateStatus('Cargando...');
+      
+      await Future.delayed(const Duration(milliseconds: 200)); // Breve delay para UX
+      
       if (userData != null) {
         try {
           final authResponse = AuthEmpresaResponse.fromJson(userData);
@@ -161,6 +159,52 @@ class _SplashPageState extends State<SplashPage>
         print('💥 Error durante inicialización en ${totalStopwatch?.elapsedMilliseconds}ms: $e');
       }
       _showErrorAndRetry(e.toString());
+    }
+  }
+
+  // ✅ OPTIMIZACIÓN: Inicializar Dio sin bloquear
+  Future<void> _initializeDio() async {
+    Stopwatch? dioStopwatch;
+    if (kDebugMode) {
+      dioStopwatch = Stopwatch()..start();
+      print('🌐 Inicializando cliente HTTP...');
+    }
+    
+    DioConfig.instance; // Esto inicializa Dio
+    
+    if (kDebugMode) {
+      dioStopwatch?.stop();
+      print('✅ Dio inicializado en ${dioStopwatch?.elapsedMilliseconds}ms');
+    }
+  }
+
+  // ✅ OPTIMIZACIÓN FINAL: Storage initialization no bloquea UX
+  Future<void> _initializeStorage() async {
+    Stopwatch? prefsStopwatch;
+    if (kDebugMode) {
+      prefsStopwatch = Stopwatch()..start();
+      print('💾 Verificando almacenamiento local...');
+    }
+    
+    try {
+      final secureStorage = SecureStorage();
+      
+      // ✅ TIMEOUT para evitar que storage lento bloquee indefinidamente
+      await Future.any([
+        secureStorage.warmUpCache(),
+        Future.delayed(const Duration(seconds: 2)), // Max 2s para warmup
+      ]);
+      
+      if (kDebugMode) {
+        prefsStopwatch?.stop();
+        print('✅ Almacenamiento verificado en ${prefsStopwatch?.elapsedMilliseconds}ms');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        prefsStopwatch?.stop();
+        print('⚠️ Storage warmup timeout/error (${prefsStopwatch?.elapsedMilliseconds}ms): $e');
+      }
+      // Continuar sin cache - no es crítico para funcionamiento
     }
   }
 
@@ -304,12 +348,16 @@ class _SplashPageState extends State<SplashPage>
                       
                       const SizedBox(height: 16),
                       
-                      // Texto de carga
-                      Text(
-                        'Inicializando...',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white.withValues(alpha: 0.7),
+                      // Texto de carga DINÁMICO
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: Text(
+                          _statusText,
+                          key: ValueKey(_statusText),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withValues(alpha: 0.7),
+                          ),
                         ),
                       ),
                     ],

@@ -2,6 +2,7 @@ import 'dart:convert';
 // import 'dart:isolate';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:syncronize/src/data/api/api_config.dart';
 import 'package:syncronize/src/data/api/dio_config.dart';
 import 'package:syncronize/src/domain/models/auth_empresa_response.dart';
 import 'package:syncronize/src/domain/models/auth_response_register_new.dart';
@@ -23,7 +24,7 @@ class AuthService {
     try {
       if (kDebugMode) print('🔐 AuthService: Iniciando login para DNI: $dni');
       
-      // 1. PETICIÓN OPTIMIZADA
+      // 1. PETICIÓN OPTIMIZADA con timeouts específicos para LOGIN
       Stopwatch? networkStopwatch;
       if (kDebugMode) {
         networkStopwatch = Stopwatch()..start();
@@ -33,8 +34,12 @@ class AuthService {
         '/api/auth/login',
         data: {'dni': dni, 'password': password},
         options: Options(
-          sendTimeout: const Duration(seconds: 8),
-          receiveTimeout: const Duration(seconds: 6),
+          // ✅ USAR TIMEOUTS ESPECÍFICOS PARA LOGIN (más largos)
+          sendTimeout: ApiConfig.loginConnectTimeout,
+          receiveTimeout: ApiConfig.loginReceiveTimeout,
+          headers: {
+            'X-Request-Type': 'login', // Identificar petición de login
+          },
         ),
       );
       
@@ -100,6 +105,51 @@ class AuthService {
   }
 
   // REGISTRO OPTIMIZADO PARA PRODUCCIÓN
+  // Future<Resource<AuthResponseRegisterNew>> register(UserRegisterNew user) async {
+  //   Stopwatch? stopwatch;
+  //   if (kDebugMode) {
+  //     stopwatch = Stopwatch()..start();
+  //   }
+    
+  //   try {
+  //     if (kDebugMode) print('📝 AuthService: Iniciando registro...');
+      
+  //     final response = await _dio.post(
+  //       'api/auth/register',
+  //       data: user.toJson(),
+  //       options: Options(
+  //         sendTimeout: const Duration(seconds: 3),
+  //         receiveTimeout: const Duration(seconds: 6),
+  //       ),
+  //     );
+
+  //     if (kDebugMode) {
+  //       stopwatch?.stop();
+  //       print('📥 Registro completado en ${stopwatch?.elapsedMilliseconds}ms - Status: ${response.statusCode}');
+  //     }
+      
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       final authResponse = AuthResponseRegisterNew.fromJson(response.data);
+  //       return Success(authResponse);
+  //     } else {
+  //       return Error(_extractErrorMessage(response.data));
+  //     }
+      
+  //   } on DioException catch (e) {
+  //     if (kDebugMode) {
+  //       stopwatch?.stop();
+  //       print('💥 Error registro en ${stopwatch?.elapsedMilliseconds}ms: ${e.type}');
+  //     }
+  //     return Error(_handleDioError(e));
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       stopwatch?.stop();
+  //       print('💥 Error inesperado registro en ${stopwatch?.elapsedMilliseconds}ms: $e');
+  //     }
+  //     return Error('Error inesperado: ${e.toString()}');
+  //   }
+  // }
+
   Future<Resource<AuthResponseRegisterNew>> register(UserRegisterNew user) async {
     Stopwatch? stopwatch;
     if (kDebugMode) {
@@ -107,20 +157,21 @@ class AuthService {
     }
     
     try {
-      if (kDebugMode) print('📝 AuthService: Iniciando registro...');
+      if (kDebugMode) print('🔐 AuthService: Iniciando registro...');
       
       final response = await _dio.post(
         'api/auth/register',
         data: user.toJson(),
         options: Options(
-          sendTimeout: const Duration(seconds: 3),
-          receiveTimeout: const Duration(seconds: 6),
+          // ✅ USAR TIMEOUTS NORMALES PARA REGISTRO
+          sendTimeout: ApiConfig.sendTimeout,
+          receiveTimeout: ApiConfig.receiveTimeout,
         ),
       );
 
       if (kDebugMode) {
         stopwatch?.stop();
-        print('📥 Registro completado en ${stopwatch?.elapsedMilliseconds}ms - Status: ${response.statusCode}');
+        print('🔥 Registro completado en ${stopwatch?.elapsedMilliseconds}ms - Status: ${response.statusCode}');
       }
       
       if (response.statusCode == 200 || response.statusCode == 201) {

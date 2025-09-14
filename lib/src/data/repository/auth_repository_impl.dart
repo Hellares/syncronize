@@ -38,6 +38,7 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
   
+  
   @override
   Future<void> saveUserSession(AuthEmpresaResponse authResponse) async {
     Stopwatch? stopwatch;
@@ -46,7 +47,8 @@ class AuthRepositoryImpl implements AuthRepository {
     }
     
     try {
-      // Guardar datos completos del usuario
+      // ✅ OPTIMIZACIÓN: Usar save normal para datos críticos de login
+      // Esto es importante para la navegación inmediata
       await secureStorage.save('user', authResponse.toJson());
       
       // Forzar actualización del token en el interceptor de Dio
@@ -64,6 +66,35 @@ class AuthRepositoryImpl implements AuthRepository {
       rethrow;
     }
   }
+
+  //! ✅ NUEVO MÉTODO: Para datos menos críticos que pueden guardarse async
+  Future<void> saveUserPreferences(Map<String, dynamic> preferences) async {
+    try {
+      // Para preferencias no críticas, usar saveAsync
+      await secureStorage.saveAsync('user_preferences', preferences);
+      if (kDebugMode) print('Preferencias guardadas en background');
+    } catch (e) {
+      if (kDebugMode) print('Error guardando preferencias: $e');
+      // No relanzar error para preferencias no críticas
+    }
+  }
+
+  //! ✅ OPTIMIZACIÓN: Método para guardar configuraciones no críticas
+  Future<void> saveAppSettings(Map<String, dynamic> settings) async {
+    try {
+      await secureStorage.saveAsync('app_settings', settings);
+      if (kDebugMode) print('Configuraciones guardadas en background');
+    } catch (e) {
+      if (kDebugMode) print('Error guardando configuraciones: $e');
+    }
+  }
+
+  // ✅ DEBUG UTILITY: Ver stats del cache
+  Map<String, dynamic> getCacheInfo() {
+    if (!kDebugMode) return {};
+    return secureStorage.getCacheStats();
+  }
+
   
   @override
   Future<bool> logout() async {

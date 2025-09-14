@@ -26,7 +26,7 @@ import 'package:syncronize/src/domain/use_cases/reniec/reniec_use_cases.dart';
 @module
 abstract class AppModule {
   
-  // CORE DEPENDENCIES
+  // ✅ CORE DEPENDENCIES - Solo UNA instancia
   @singleton
   Dio dio() {
     if (kDebugMode) print('🔧 Creando Dio singleton');
@@ -39,105 +39,78 @@ abstract class AppModule {
     return SecureStorage();
   }
   
-  @preResolve
-  @singleton
-  Future<String> token() async {
-    try {
-      final secureStorage = SecureStorage();
-      final userData = await secureStorage.read('user');
-      if (userData != null) {
-        final token = userData['data']?['token'] ?? '';
-        if (kDebugMode && token.isNotEmpty) {
-          print('🔑 Token cargado desde caché');
-        }
-        return token;
-      }
-      if (kDebugMode) print('⚠️ No hay token en caché');
-      return '';
-    } catch (e) {
-      if (kDebugMode) print('❌ Error cargando token: $e');
-      return '';
-    }
+  // ✅ ELIMINAR token preResolve - Causa problemas de inicialización
+  // El token se obtendrá dinámicamente cuando se necesite
+  
+  // ✅ SERVICES - Factory en lugar de Singleton
+  // Esto evita la duplicación pero mantiene performance
+  @injectable
+  AuthService authService(Dio dio) {
+    if (kDebugMode) print('🔐 Creando AuthService');
+    return AuthService(); // Usa DioConfig.instance internamente
   }
   
-  // SERVICES - Singleton
-  @singleton
-  AuthService authService() {
-    if (kDebugMode) print('🔐 Creando AuthService singleton');
-    return AuthService();
-  }
-  
-  @singleton
+  @injectable
   ReniecService reniecService() {
-    if (kDebugMode) print('🆔 Creando ReniecService singleton');
+    if (kDebugMode) print('🆔 Creando ReniecService');
     return ReniecService();
   }
   
-  @singleton
+  @injectable
   EmpresaUserRolesService empresaUserRolesService() {
-    if (kDebugMode) print('🏢 Creando EmpresaUserRolesService singleton');
+    if (kDebugMode) print('🏢 Creando EmpresaUserRolesService');
     return EmpresaUserRolesService();
   }
   
-  // REPOSITORIES - Singleton
+  // ✅ REPOSITORIES - Singleton con dependencias inyectadas
   @singleton
-  AuthRepository authRepository() {
+  AuthRepository authRepository(AuthService authService, SecureStorage secureStorage) {
     if (kDebugMode) print('📚 Creando AuthRepository singleton');
-    return AuthRepositoryImpl(authService(), secureStorage());
+    return AuthRepositoryImpl(authService, secureStorage);
   }
   
   @singleton
-  ReniecRepository reniecRepository() {
+  ReniecRepository reniecRepository(ReniecService reniecService) {
     if (kDebugMode) print('📚 Creando ReniecRepository singleton');
-    return ReniecRepositoryImpl(reniecService());
+    return ReniecRepositoryImpl(reniecService);
   }
   
   @singleton
-  EmpresaUserRolesRepository empresaUserRolesRepository() {
+  EmpresaUserRolesRepository empresaUserRolesRepository(EmpresaUserRolesService empresaUserRolesService) {
     if (kDebugMode) print('📚 Creando EmpresaUserRolesRepository singleton');
-    return EmpresaUserRolesRepositoryImpl(empresaUserRolesService());
+    return EmpresaUserRolesRepositoryImpl(empresaUserRolesService);
   }
   
-  // USE CASES CONTAINERS - Singleton creando use cases internamente
+  // ✅ USE CASES CONTAINERS - Singleton optimizado
   @singleton
-  AuthUseCases authUseCases() {
+  AuthUseCases authUseCases(AuthRepository authRepository) {
     if (kDebugMode) print('🎯 Creando AuthUseCases singleton');
     
-    // ✅ Obtener repository singleton una sola vez
-    final authRepo = authRepository();
-    
-    // ✅ Crear todos los use cases usando la misma instancia del repository
     return AuthUseCases(
-      login: LoginUseCase(authRepo),
-      register: RegisterUseCase(authRepo),
-      saveUserSession: SaveUserSessionUseCase(authRepo),
-      getUserSession: GetUserSessionUseCase(authRepo),
-      logout: LogoutUseCase(authRepo),
+      login: LoginUseCase(authRepository),
+      register: RegisterUseCase(authRepository),
+      saveUserSession: SaveUserSessionUseCase(authRepository),
+      getUserSession: GetUserSessionUseCase(authRepository),
+      logout: LogoutUseCase(authRepository),
     );
   }
   
   @singleton
-  ReniecUseCases reniecUseCases() {
+  ReniecUseCases reniecUseCases(ReniecRepository reniecRepository) {
     if (kDebugMode) print('🎯 Creando ReniecUseCases singleton');
     
-    // ✅ Obtener repository singleton una sola vez
-    final reniecRepo = reniecRepository();
-    
     return ReniecUseCases(
-      reniecRepo,
-      getDataDniReniec: GetDataDniReniecUseCase(reniecRepo),
+      reniecRepository,
+      getDataDniReniec: GetDataDniReniecUseCase(reniecRepository),
     );
   }
 
   @singleton
-  EmpresaUserRolesUseCases empresaUserRolesUseCases() {
+  EmpresaUserRolesUseCases empresaUserRolesUseCases(EmpresaUserRolesRepository empresaUserRolesRepository) {
     if (kDebugMode) print('🎯 Creando EmpresaUserRolesUseCases singleton');
     
-    // ✅ Obtener repository singleton una sola vez
-    final empresaRepo = empresaUserRolesRepository();
-    
     return EmpresaUserRolesUseCases(
-      getEmpresaUserRoles: GetEmpresaUserRolesUsecase(empresaRepo),
+      getEmpresaUserRoles: GetEmpresaUserRolesUsecase(empresaUserRolesRepository),
     );
   }
 }

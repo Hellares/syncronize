@@ -3,13 +3,12 @@ import 'package:flutter/foundation.dart';
 class ApiConfig {
   static const String localApi = "192.168.100.3:3000";
   static const String productionApi = 'api-gateway.syncronize.net.pe';
+  // static const String productionApi = '192.168.100.3:3000';
   
-  // Determinar automáticamente el entorno basado en kReleaseMode
   static bool get isProduction => kReleaseMode;
 
   static String get apiSyncronize => isProduction ? productionApi : localApi;
 
-  // URL base para Dio
   static String get baseUrl => isProduction 
     ? 'https://$productionApi'
     : 'http://$localApi';
@@ -20,18 +19,27 @@ class ApiConfig {
       : Uri.http(apiSyncronize, path);
   }
 
-  // Configuraciones específicas por entorno
+  // ✅ TIMEOUTS AJUSTADOS PARA MICROSERVICIOS
   static Duration get connectTimeout => isProduction 
-    ? const Duration(seconds: 8)  // Más tiempo en producción (red externa)
-    : const Duration(seconds: 5); // Menos tiempo en desarrollo (red local)
+    ? const Duration(seconds: 10)  // Más tiempo para conexión externa
+    : const Duration(seconds: 8);  // Más tiempo para desarrollo local
 
   static Duration get receiveTimeout => isProduction 
+    ? const Duration(seconds: 15)  // Suficiente para microservicios en producción
+    : const Duration(seconds: 12); // Suficiente para desarrollo local
+
+  static Duration get sendTimeout => isProduction 
     ? const Duration(seconds: 10) 
     : const Duration(seconds: 8);
 
-  static Duration get sendTimeout => isProduction 
-    ? const Duration(seconds: 8) 
-    : const Duration(seconds: 5);
+  // ✅ TIMEOUTS ESPECÍFICOS PARA LOGIN (más tiempo)
+  static Duration get loginReceiveTimeout => isProduction 
+    ? const Duration(seconds: 20)  // Login puede tardar más por validaciones
+    : const Duration(seconds: 15); // Desarrollo local
+
+  static Duration get loginConnectTimeout => isProduction 
+    ? const Duration(seconds: 12) 
+    : const Duration(seconds: 10);
 
   // Headers específicos por entorno
   static Map<String, String> get headers {
@@ -42,7 +50,6 @@ class ApiConfig {
     };
 
     if (isProduction) {
-      // Headers adicionales para producción
       baseHeaders.addAll({
         'X-API-Version': '1.0',
         'X-Client-Platform': 'flutter',
@@ -53,10 +60,10 @@ class ApiConfig {
   }
 
   // Configuraciones de retry por entorno
-  static int get maxRetries => isProduction ? 2 : 1;
+  static int get maxRetries => isProduction ? 3 : 2; // Más reintentos
   static Duration get retryDelay => isProduction 
-    ? const Duration(milliseconds: 500)
-    : const Duration(milliseconds: 300);
+    ? const Duration(milliseconds: 800)  // Más tiempo entre reintentos
+    : const Duration(milliseconds: 500);
 
   // Info de debugging
   static void logEnvironmentInfo() {
@@ -64,6 +71,7 @@ class ApiConfig {
       print('🌐 Entorno: ${isProduction ? "PRODUCCIÓN" : "DESARROLLO"}');
       print('🔗 Base URL: $baseUrl');
       print('⏱️ Timeouts: Connect=${connectTimeout.inSeconds}s, Receive=${receiveTimeout.inSeconds}s');
+      print('🔐 Login Timeouts: Connect=${loginConnectTimeout.inSeconds}s, Receive=${loginReceiveTimeout.inSeconds}s');
     }
   }
 }
