@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:syncronize/src/data/api/dio_config.dart';
-import 'package:syncronize/src/data/datasource/local/shared_preference.dart';
+import 'package:syncronize/src/data/datasource/local/secure_storage.dart';
 import 'package:syncronize/src/data/datasource/remote/service/auth_service.dart';
 import 'package:syncronize/src/data/datasource/remote/service/empresa_user_roles_service.dart';
 import 'package:syncronize/src/data/datasource/remote/service/reniec_service.dart';
@@ -34,17 +34,17 @@ abstract class AppModule {
   }
   
   @singleton
-  SharedPref sharedPref() {
-    if (kDebugMode) print('📱 Creando SharedPref singleton');
-    return SharedPref();
+  SecureStorage secureStorage() {
+    if (kDebugMode) print('🔒 Creando SecureStorage singleton');
+    return SecureStorage();
   }
   
   @preResolve
   @singleton
   Future<String> token() async {
     try {
-      final sharedPref = SharedPref();
-      final userData = await sharedPref.read('user');
+      final secureStorage = SecureStorage();
+      final userData = await secureStorage.read('user');
       if (userData != null) {
         final token = userData['data']?['token'] ?? '';
         if (kDebugMode && token.isNotEmpty) {
@@ -83,7 +83,7 @@ abstract class AppModule {
   @singleton
   AuthRepository authRepository() {
     if (kDebugMode) print('📚 Creando AuthRepository singleton');
-    return AuthRepositoryImpl(authService(), sharedPref());
+    return AuthRepositoryImpl(authService(), secureStorage());
   }
   
   @singleton

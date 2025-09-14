@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:syncronize/src/data/api/api_config.dart';
-import 'package:syncronize/src/data/datasource/local/shared_preference.dart';
+import 'package:syncronize/src/data/datasource/local/secure_storage.dart';
 import 'package:syncronize/src/domain/models/auth_empresa_response.dart';
 
 class DioConfig {
@@ -100,8 +100,8 @@ class OptimizedAuthInterceptor extends Interceptor {
     }
     
     try {
-      final sharedPref = SharedPref();
-      final userData = await sharedPref.read('user');
+      final secureStorage = SecureStorage();
+      final userData = await secureStorage.read('user');
       if (userData != null) {
         final authResponse = AuthEmpresaResponse.fromJson(userData);
         _cachedToken = authResponse.data?.token;

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:syncronize/src/data/api/dio_config.dart';
-import 'package:syncronize/src/data/datasource/local/shared_preference.dart';
+import 'package:syncronize/src/data/datasource/local/secure_storage.dart';
 import 'package:syncronize/src/data/datasource/remote/service/auth_service.dart';
 import 'package:syncronize/src/domain/models/auth_empresa_response.dart';
 import 'package:syncronize/src/domain/models/auth_response_register_new.dart';
@@ -10,9 +10,9 @@ import 'package:syncronize/src/domain/utils/resource.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthService authService;
-  final SharedPref sharedPref;
+  final SecureStorage secureStorage;
   
-  AuthRepositoryImpl(this.authService, this.sharedPref);
+  AuthRepositoryImpl(this.authService, this.secureStorage);
 
   @override
   Future<Resource<AuthEmpresaResponse>> login(String dni, String password) {
@@ -27,7 +27,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<AuthEmpresaResponse?> getUserSession() async {
     try {
-      final userData = await sharedPref.read('user');
+      final userData = await secureStorage.read('user');
       if (userData != null) {
         return AuthEmpresaResponse.fromJson(userData);
       }
@@ -47,7 +47,7 @@ class AuthRepositoryImpl implements AuthRepository {
     
     try {
       // Guardar datos completos del usuario
-      await sharedPref.save('user', authResponse.toJson());
+      await secureStorage.save('user', authResponse.toJson());
       
       // Forzar actualización del token en el interceptor de Dio
       _forceAuthInterceptorRefresh();
@@ -138,7 +138,7 @@ class AuthRepositoryImpl implements AuthRepository {
   // Método privado para limpiar sesión local
   Future<void> _clearLocalSession() async {
     try {
-      await sharedPref.remove('user');
+      await secureStorage.remove('user');
       if (kDebugMode) print('Sesión local limpiada');
     } catch (e) {
       if (kDebugMode) print('Error limpiando sesión local: $e');
@@ -169,7 +169,7 @@ class AuthRepositoryImpl implements AuthRepository {
     if (!kDebugMode) return null;
     
     try {
-      final userData = await sharedPref.read('user');
+      final userData = await secureStorage.read('user');
       if (userData != null) {
         final authResponse = AuthEmpresaResponse.fromJson(userData);
         return {

@@ -12,8 +12,8 @@
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:syncronize/src/data/datasource/local/shared_preference.dart'
-    as _i397;
+import 'package:syncronize/src/data/datasource/local/secure_storage.dart'
+    as _i16;
 import 'package:syncronize/src/data/datasource/remote/service/auth_service.dart'
     as _i29;
 import 'package:syncronize/src/data/datasource/remote/service/empresa_user_roles_service.dart'
@@ -41,24 +41,24 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
-    gh.factory<_i397.SharedPref>(() => appModule.sharedPref());
-    gh.factory<_i29.AuthService>(() => appModule.authService());
-    gh.factory<_i304.ReniecService>(() => appModule.reniecService());
-    gh.factory<_i101.EmpresaUserRolesService>(
+    gh.singleton<_i361.Dio>(() => appModule.dio());
+    gh.singleton<_i16.SecureStorage>(() => appModule.secureStorage());
+    await gh.singletonAsync<String>(() => appModule.token(), preResolve: true);
+    gh.singleton<_i29.AuthService>(() => appModule.authService());
+    gh.singleton<_i304.ReniecService>(() => appModule.reniecService());
+    gh.singleton<_i101.EmpresaUserRolesService>(
       () => appModule.empresaUserRolesService(),
     );
-    gh.factory<_i542.AuthRepository>(() => appModule.authRepository());
-    gh.factory<_i860.ReniecRepository>(() => appModule.reniecRepository());
-    gh.factory<_i91.EmpresaUserRolesRepository>(
+    gh.singleton<_i542.AuthRepository>(() => appModule.authRepository());
+    gh.singleton<_i860.ReniecRepository>(() => appModule.reniecRepository());
+    gh.singleton<_i91.EmpresaUserRolesRepository>(
       () => appModule.empresaUserRolesRepository(),
     );
-    gh.factory<_i736.AuthUseCases>(() => appModule.authUseCases());
-    gh.factory<_i792.ReniecUseCases>(() => appModule.reniecUseCases());
-    gh.factory<_i303.EmpresaUserRolesUseCases>(
+    gh.singleton<_i736.AuthUseCases>(() => appModule.authUseCases());
+    gh.singleton<_i792.ReniecUseCases>(() => appModule.reniecUseCases());
+    gh.singleton<_i303.EmpresaUserRolesUseCases>(
       () => appModule.empresaUserRolesUseCases(),
     );
-    gh.singleton<_i361.Dio>(() => appModule.dio());
-    await gh.singletonAsync<String>(() => appModule.token(), preResolve: true);
     return this;
   }
 }

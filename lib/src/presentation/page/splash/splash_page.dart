@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:syncronize/injection.dart';
 import 'package:syncronize/src/data/api/dio_config.dart';
-import 'package:syncronize/src/data/datasource/local/shared_preference.dart';
+import 'package:syncronize/src/data/datasource/local/secure_storage.dart';
 import 'package:syncronize/src/domain/models/auth_empresa_response.dart';
 
 class SplashPage extends StatefulWidget {
@@ -95,8 +95,8 @@ class _SplashPageState extends State<SplashPage>
         print('💾 Verificando almacenamiento local...');
       }
       
-      final sharedPref = SharedPref();
-      await sharedPref.read('user'); // Pre-carga las preferencias
+      final secureStorage = SecureStorage();
+      await secureStorage.read('user'); // Pre-carga las preferencias
       
       if (kDebugMode) {
         prefsStopwatch?.stop();
@@ -120,7 +120,7 @@ class _SplashPageState extends State<SplashPage>
         print('🔍 Verificando sesión de usuario...');
       }
       
-      final userData = await sharedPref.read('user');
+      final userData = await secureStorage.read('user');
       
       if (kDebugMode) {
         sessionStopwatch?.stop();
