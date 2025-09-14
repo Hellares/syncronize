@@ -17,6 +17,7 @@ class EmpresaUserRolesBloc extends Bloc<EmpresaUserRolesEvent, EmpresaUserRolesS
     on<RefreshEmpresaUserRoles>(_onRefreshEmpresaUserRoles);
     on<RefreshEmpresaUserRolesAuto>(_onRefreshEmpresaUserRolesAuto);
     on<ResetEmpresaUserRolesInitialization>(_onResetInitialization);
+    on<AdminLogout>(_onLogout);
   }
 
   Future<void> _onEmpresaInit(EmpresaUserRolesInitEvent event, Emitter<EmpresaUserRolesState> emit) async {
@@ -88,5 +89,50 @@ class EmpresaUserRolesBloc extends Bloc<EmpresaUserRolesEvent, EmpresaUserRolesS
   Future<void> _onResetInitialization(ResetEmpresaUserRolesInitialization event, Emitter<EmpresaUserRolesState> emit) async {
     emit(state.copyWith(isInitialized: false));
   }
+
+  Future<void> _onLogout(AdminLogout event, Emitter<EmpresaUserRolesState> emit) async {
+    try {
+      // print('🚪 Iniciando proceso de logout...');
+      
+      // 1. Mostrar loading
+      emit(state.copyWith(response: Loading()));
+      
+      // 2. Ejecutar logout completo (servidor + local)
+      final success = await authUseCases.logout.run();
+      
+      if (success) {
+        // 3. Limpiar estado del BLoC completamente
+        emit(state.copyWith(
+          response: Initial(),
+          empresas: [],
+          isInitialized: false,
+        ));
+        
+        // 4. Marcar logout como exitoso para navegación
+        emit(state.copyWith(
+          response: Success('Sesión cerrada exitosamente'),
+          logoutSuccess: true,
+        ));
+        
+        // print('✅ Proceso de logout completado');
+        
+      } else {
+        emit(state.copyWith(
+          response: Error('No se pudo cerrar la sesión completamente'),
+        ));
+      }
+      
+    } catch (e) {
+      // print('❌ Error en proceso de logout: $e');
+      
+      // Incluso si hay error, intentar limpiar estado local
+      emit(state.copyWith(
+        response: Error('Error al cerrar sesión: $e'),
+        empresas: [],
+        isInitialized: false,
+      ));
+    }
+  }
+
 }
 

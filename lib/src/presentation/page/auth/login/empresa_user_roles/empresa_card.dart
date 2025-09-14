@@ -35,7 +35,7 @@ class EmpresaCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: _getEstadoColor(empresa.estado).withOpacity(0.2),
+                    color: _getEstadoColor(empresa.estado).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(

@@ -38,6 +38,12 @@ class _EmpresaUserPageState extends State<EmpresaUserPage> {
               _bloc!.add(const RefreshEmpresaUserRolesAuto());
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              _bloc!.add(const AdminLogout());
+            },
+          ),
         ],
       ),
       body: BlocListener<EmpresaUserRolesBloc, EmpresaUserRolesState>(

@@ -3,6 +3,7 @@ import 'package:syncronize/src/domain/repository/empresa_user_roles_repository.d
 import 'package:syncronize/src/domain/utils/resource.dart';
 
 class GetEmpresaUserRolesUsecase {
+  
   EmpresaUserRolesRepository repository;
   GetEmpresaUserRolesUsecase(this.repository);
 

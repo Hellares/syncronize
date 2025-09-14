@@ -207,7 +207,7 @@ void main() {
       // 🔧 LÍMITE MÁS REALISTA: 150ms para 10 widgets en testing
       expect(stopwatch.elapsedMilliseconds, lessThan(150));
       
-      print('10 widgets initialized in: ${stopwatch.elapsedMilliseconds}ms');
+      // print('10 widgets initialized in: ${stopwatch.elapsedMilliseconds}ms');
     });
 
     // 8. BENCHMARK DE TYPING OPTIMIZADO
@@ -237,7 +237,7 @@ void main() {
       // 🔧 Límite ajustado para 5 cambios
       expect(stopwatch.elapsedMilliseconds, lessThan(100));
       
-      print('5 text changes handled in: ${stopwatch.elapsedMilliseconds}ms');
+      // print('5 text changes handled in: ${stopwatch.elapsedMilliseconds}ms');
       controller.dispose();
     });
 
@@ -275,7 +275,7 @@ void main() {
         controller.dispose();
       }
       
-      print('5 email widgets created in: ${stopwatch.elapsedMilliseconds}ms');
+      // print('5 email widgets created in: ${stopwatch.elapsedMilliseconds}ms');
     });
 
     // 10. 🔧 NUEVO: Test específico de cache performance
@@ -312,7 +312,7 @@ void main() {
       expect(totalRebuilds, lessThanOrEqualTo(1)); // Solo rebuild inicial
       
       controller.dispose();
-      print('Text changes caused $totalRebuilds rebuilds (cache working)');
+      // print('Text changes caused $totalRebuilds rebuilds (cache working)');
     });
   });
 

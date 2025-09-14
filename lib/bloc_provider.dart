@@ -11,7 +11,6 @@ import 'package:syncronize/src/presentation/page/auth/register/bloc/register_cli
 List<BlocProvider> blocProviders = [
 
   BlocProvider<LoginBloc>(create: (context) => LoginBloc(locator<AuthUseCases>()).. add(InitEvent())),
-
   BlocProvider<RegisterClienteNewBloc>(create: (context) => RegisterClienteNewBloc(locator<ReniecUseCases>(),locator<AuthUseCases>(),)..add(RegisterClienteNewInitEvent())),
   BlocProvider<EmpresaUserRolesBloc>(create: (context) => EmpresaUserRolesBloc(locator<AuthUseCases>(), locator())),
 

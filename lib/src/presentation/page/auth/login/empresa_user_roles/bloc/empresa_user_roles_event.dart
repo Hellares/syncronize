@@ -35,3 +35,7 @@ class RefreshEmpresaUserRolesAuto extends EmpresaUserRolesEvent {
 class ResetEmpresaUserRolesInitialization extends EmpresaUserRolesEvent {
   const ResetEmpresaUserRolesInitialization();
 }
+
+class AdminLogout extends EmpresaUserRolesEvent{
+  const AdminLogout();
+}

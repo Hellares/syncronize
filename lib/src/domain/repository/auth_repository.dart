@@ -7,7 +7,7 @@ import 'package:syncronize/src/domain/utils/resource.dart';
 abstract class AuthRepository {
 
   Future<AuthEmpresaResponse?> getUserSession(); 
-  Future<void> logout(); 
+  Future<bool> logout(); 
   Future<void> saveUserSession(AuthEmpresaResponse authResponse);
   Future<Resource<AuthEmpresaResponse>> login(String dni, String password);
   Future<Resource<AuthResponseRegisterNew>> register(UserRegisterNew user);

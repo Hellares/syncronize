@@ -28,6 +28,7 @@ class ReniecService {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final reniecResponse = ReniecResponse.fromJson(data);
+        // print(reniecResponse.toJson());
         return Success(reniecResponse);
       } else {
         String errorMessage;

@@ -5,9 +5,7 @@ import 'package:syncronize/core/fonts/app_fonts.dart';
 import 'package:syncronize/core/theme/app_colors.dart';
 import 'package:syncronize/core/theme/app_gradients.dart';
 import 'package:syncronize/core/theme/gradient_container.dart';
-// import 'package:syncronize/core/widgets/rive_background.dart';
 import 'package:syncronize/src/presentation/page/auth/login/cliente/cliente_login_page.dart';
-// import 'package:syncronize/src/presentation/page/auth/login/empresa/empresa_login_widget.dart';
 
 class MainLoginPage extends StatefulWidget {
   const MainLoginPage({super.key});
@@ -17,17 +15,14 @@ class MainLoginPage extends StatefulWidget {
 }
 
 class _MainLoginPageState extends State<MainLoginPage> {
-
   @override
   Widget build(BuildContext context) {
     _transparentBar();
 
     return Scaffold(
-      
       extendBodyBehindAppBar: true,
       extendBody: true,
       body: GradientContainer(
-        // gradient: AppGradients.blueWhiteBlue(),
         gradient: AppGradients.custom(
           startColor: AppColors.white, 
           middleColor: AppColors.white,
@@ -37,28 +32,26 @@ class _MainLoginPageState extends State<MainLoginPage> {
         height: double.infinity,
         child: SafeArea(
           child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 30.0,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 20),
-                  _buildWelcomeText(),
-                  const SizedBox(height: 50),
-                  _buildLogoSection(),
-                
-                  const SizedBox(height: 30),
-                
-                  // const SizedBox(height: 30),
-                
-                  _buildContent(),
-                
-                  const SizedBox(height: 80),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,  // Cambiado a min para no expandir infinitamente
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 20),
+                    _buildWelcomeText(),
+                    const SizedBox(height: 50),
+                    _buildLogoSection(),
+                    const SizedBox(height: 30),
+                    _buildContent(),
+                    const SizedBox(height: 80),
+                  ],
+                ),
               ),
             ),
           ),
@@ -66,8 +59,6 @@ class _MainLoginPageState extends State<MainLoginPage> {
       ),
     );
   }
-
-  
 
   void _transparentBar() {
     SystemChrome.setSystemUIOverlayStyle(
@@ -96,10 +87,9 @@ class _MainLoginPageState extends State<MainLoginPage> {
     );
   }
 
-  
-
   Widget _buildLogoSection() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         SvgPicture.asset(
           'assets/img/logoplano2.svg',
@@ -118,6 +108,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
       ],
     );
   }
+
   Widget _buildContent() {
     return const ClienteLoginPage(); // Solo muestra la página de cliente
   }
