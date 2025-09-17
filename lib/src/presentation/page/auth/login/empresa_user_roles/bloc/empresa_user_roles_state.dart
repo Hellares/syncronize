@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:syncronize/src/domain/models/empresa.dart';
+import 'package:syncronize/src/domain/models/auth_empresa_response.dart';
+// import 'package:syncronize/src/domain/models/empresa.dart';
 import 'package:syncronize/src/domain/utils/resource.dart';
 
 class EmpresaUserRolesState extends Equatable {

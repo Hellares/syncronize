@@ -22,6 +22,10 @@ import 'package:syncronize/src/domain/use_cases/empresa_user_roles/empresa_user_
 import 'package:syncronize/src/domain/use_cases/empresa_user_roles/get_empresa_user_roles_usecase.dart';
 import 'package:syncronize/src/domain/use_cases/reniec/get_data_dni_reniec_use_case.dart';
 import 'package:syncronize/src/domain/use_cases/reniec/reniec_use_cases.dart';
+// import 'package:syncronize/src/data/datasource/remote/service/empresa_auth_service.dart';
+// import 'package:syncronize/src/data/repository/empresa_auth_repository_impl.dart';
+import 'package:syncronize/src/domain/repository/empresa_auth_repository.dart';
+import 'package:syncronize/src/domain/use_cases/empresa_auth/empresa_auth_use_cases.dart';
 
 @module
 abstract class AppModule {
@@ -60,6 +64,24 @@ abstract class AppModule {
   EmpresaUserRolesService empresaUserRolesService() {
     if (kDebugMode) print('🏢 Creando EmpresaUserRolesService');
     return EmpresaUserRolesService();
+  }
+
+  // @injectable
+  // EmpresaAuthService empresaAuthService() {
+  //   if (kDebugMode) print('🏢 Creando EmpresaAuthService');
+  //   return EmpresaAuthService();
+  // }
+
+  // @singleton
+  // EmpresaAuthRepository empresaAuthRepository(EmpresaAuthService empresaAuthService, SecureStorage secureStorage) {
+  //   if (kDebugMode) print('📚 Creando EmpresaAuthRepository singleton');
+  //   return EmpresaAuthRepositoryImpl(empresaAuthService, secureStorage);
+  // }
+
+  @singleton
+  EmpresaAuthUseCases empresaAuthUseCases(EmpresaAuthRepository empresaAuthRepository) {
+    if (kDebugMode) print('🎯 Creando EmpresaAuthUseCases singleton');
+    return EmpresaAuthUseCases(repository: empresaAuthRepository);
   }
   
   // ✅ REPOSITORIES - Singleton con dependencias inyectadas

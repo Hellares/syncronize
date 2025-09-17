@@ -35,6 +35,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginSaveUserSession>(_onLoginSaveUserSession);
     on<ClearError>(_onClearError);
     on<LoginFormReset>(_onFormReset);
+    on<LogoutRequested>(_onLogoutRequested);
   }
 
   final formKey = GlobalKey<FormState>();
@@ -258,6 +259,68 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(response: Initial(), formKey: formKey));
   }
 
+  
+  /*
+    ***************************************************************************************
+    Metodo: logoutRequested
+    Fecha: 16-09-2025
+    Descripcion: logout del usuario, limpia la sesion y resetea el estado del bloc y cache de validacion
+    Autor: James Torres
+    ***************************************************************************************
+  */  
+
+  Future<void> _onLogoutRequested(LogoutRequested event,Emitter<LoginState> emit) async {
+    Stopwatch? stopwatch;
+    if (kDebugMode) {
+      stopwatch = Stopwatch()..start();
+      print('🚪 Iniciando logout...');
+    }
+
+    try {
+      // Loading inmediato
+      emit(state.copyWith(response: Loading(), formKey: formKey));
+
+      // Ejecutar logout a través del use case
+      final logoutSuccess = await authUseCases.logout.run();
+
+      if (kDebugMode) {
+        stopwatch?.stop();
+        print('✅ Logout completado en ${stopwatch?.elapsedMilliseconds}ms - Success: $logoutSuccess');
+      }
+
+      if (logoutSuccess) {
+        // Reset completo del estado tras logout exitoso
+        _clearValidationCache();
+        _cancelPendingValidation();
+        
+        // Estado limpio que indica logout exitoso
+        emit(const LoginState().copyWith(
+          response: Success('Sesión cerrada exitosamente'),
+          formKey: formKey,
+        ));
+        
+        if (kDebugMode) print('🔄 Estado reseteado después del logout');
+      } else {
+        // Error en logout
+        emit(state.copyWith(
+          response: Error('Error al cerrar sesión. Intenta nuevamente.'),
+          formKey: formKey,
+        ));
+      }
+
+    } catch (e) {
+      if (kDebugMode) {
+        stopwatch?.stop();
+        print('💥 Error en logout (${stopwatch?.elapsedMilliseconds}ms): $e');
+      }
+
+      emit(state.copyWith(
+        response: Error('Error al cerrar sesión: ${e.toString()}'),
+        formKey: formKey,
+      ));
+    }
+  }
+
   // VALIDACIÓN OPTIMIZADA
   String? _validateDniOptimized(String dni) {
     if (_lastDniValue == dni) {
@@ -361,6 +424,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         state.response is! Loading &&
         (_lastSubmitTime == null ||
             DateTime.now().difference(_lastSubmitTime!) >= _submitDebounce);
+  }
+
+  bool get canLogout {
+    return state.response is! Loading;
   }
 
   @override

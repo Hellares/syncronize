@@ -47,3 +47,7 @@ class ClearError extends LoginEvent {
   const ClearError();
 }
 
+class LogoutRequested extends LoginEvent {
+  const LogoutRequested();
+}
+

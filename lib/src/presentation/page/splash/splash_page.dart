@@ -140,6 +140,7 @@ class _SplashPageState extends State<SplashPage>
           
           // Verificar si necesita seleccionar empresa
           if (authResponse.data!.needsEmpresaSelection) {
+            print('ℹ️ Usuario necesita seleccionar empresa/rol');
             _navigateToEmpresaSelection(authResponse);
           } else {
             _navigateToHome();
@@ -222,10 +223,15 @@ class _SplashPageState extends State<SplashPage>
 
   void _navigateToEmpresaSelection(AuthEmpresaResponse authResponse) {
     if (mounted) {
-      Navigator.pushReplacementNamed(
+      // Navigator.pushReplacementNamed(
+      //   context, 
+      //   'user/empresa/roles',
+      //   arguments: authResponse,
+      // );
+      Navigator.pushNamedAndRemoveUntil(
         context, 
-        'empresa/user',
-        arguments: authResponse,
+        'user/empresa/roles',
+        (route) => false,
       );
     }
   }

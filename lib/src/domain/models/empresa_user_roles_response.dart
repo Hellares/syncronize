@@ -1,4 +1,5 @@
-import 'package:syncronize/src/domain/models/empresa.dart';
+import 'package:syncronize/src/domain/models/auth_empresa_response.dart';
+// import 'package:syncronize/src/domain/models/empresa.dart';
 
 class EmpresaUserRolesResponse {
     bool success;

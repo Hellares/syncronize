@@ -50,6 +50,9 @@ class _ClienteLoginPageState extends State<ClienteLoginPage> {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               _handleSuccess(context, authResponse);
             });
+            // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            //     Navigator.pushNamedAndRemoveUntil(context, 'user/empresa/roles', (route) => false);
+            //   });  
           }
         },
         child: BlocBuilder<LoginBloc, LoginState>(
@@ -121,11 +124,12 @@ class _ClienteLoginPageState extends State<ClienteLoginPage> {
     
     // Navegar según necesidad
     if (authResponse.data!.needsEmpresaSelection) {
-      Navigator.pushReplacementNamed(
-        context, 
-        'empresa/user',
-        arguments: authResponse
-      );
+      Navigator.pushNamedAndRemoveUntil(context, 'user/empresa/roles', (route) => false);
+      // Navigator.pushNamedAndRemoveUntil(
+      //   context, 
+      //   'user/empresa/roles',
+      //   (route) => false,
+      // );
     } else {
       Navigator.pushReplacementNamed(context, 'home');
     }
