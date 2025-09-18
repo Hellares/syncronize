@@ -19,9 +19,9 @@ class _UserEmpresaRolesListState extends State<UserEmpresaRolesList> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Empresas'),
-        actions: [
-          
-          LogoutButton.appBar()        ],
+        actions: [          
+          LogoutButton.appBar()
+        ],
       ),
       body:  BlocBuilder<ListEmpresaRolesBloc, ListEmpresaRolesState>(
         builder: (context, state ) {
@@ -39,8 +39,6 @@ class _UserEmpresaRolesListState extends State<UserEmpresaRolesList> {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
-                    
-                    
                   ),
                 ),
               Center(

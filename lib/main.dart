@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           'user/empresa/roles': (context) => const UserEmpresaRolesList(),
           'register/new': (context) => const RegisterClienteNewPage(),
           // 'empresa/user': (context) => const EmpresaUserPage(),
-          'home': (context) => const HomePage(),
+          'home': (context) => const HomePageAlternative(),
         },
       ),
     );

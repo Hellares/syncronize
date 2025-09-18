@@ -15,6 +15,5 @@ List<BlocProvider> blocProviders = [
   BlocProvider<LoginBloc>(create: (context) => LoginBloc(locator<AuthUseCases>()).. add(InitEvent())),
   BlocProvider<RegisterClienteNewBloc>(create: (context) => RegisterClienteNewBloc(locator<ReniecUseCases>(),locator<AuthUseCases>(),)..add(RegisterClienteNewInitEvent())),
   BlocProvider<ListEmpresaRolesBloc>(create: (context) => ListEmpresaRolesBloc(locator<AuthUseCases>())..add(GetListEmpresaRolesEvent())),
-  // BlocProvider<EmpresaUserRolesBloc>(create: (context) => EmpresaUserRolesBloc(locator<AuthUseCases>(), locator())),
 
 ];

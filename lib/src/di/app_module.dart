@@ -4,13 +4,10 @@ import 'package:injectable/injectable.dart';
 import 'package:syncronize/src/data/api/dio_config.dart';
 import 'package:syncronize/src/data/datasource/local/secure_storage.dart';
 import 'package:syncronize/src/data/datasource/remote/service/auth_service.dart';
-import 'package:syncronize/src/data/datasource/remote/service/empresa_user_roles_service.dart';
 import 'package:syncronize/src/data/datasource/remote/service/reniec_service.dart';
 import 'package:syncronize/src/data/repository/auth_repository_impl.dart';
-import 'package:syncronize/src/data/repository/empresa_user_roles_repository_impl.dart';
 import 'package:syncronize/src/data/repository/reniec_repository_impl.dart';
 import 'package:syncronize/src/domain/repository/auth_repository.dart';
-import 'package:syncronize/src/domain/repository/empresa_user_roles_repository.dart';
 import 'package:syncronize/src/domain/repository/reniec_repository.dart';
 import 'package:syncronize/src/domain/use_cases/auth/auth_use_cases.dart';
 import 'package:syncronize/src/domain/use_cases/auth/get_user_session_usecase.dart';
@@ -18,14 +15,8 @@ import 'package:syncronize/src/domain/use_cases/auth/login_use_case.dart';
 import 'package:syncronize/src/domain/use_cases/auth/logout_usecase.dart';
 import 'package:syncronize/src/domain/use_cases/auth/register_use_case.dart';
 import 'package:syncronize/src/domain/use_cases/auth/save_user_session_usecase.dart';
-import 'package:syncronize/src/domain/use_cases/empresa_user_roles/empresa_user_roles_use_cases.dart';
-import 'package:syncronize/src/domain/use_cases/empresa_user_roles/get_empresa_user_roles_usecase.dart';
 import 'package:syncronize/src/domain/use_cases/reniec/get_data_dni_reniec_use_case.dart';
 import 'package:syncronize/src/domain/use_cases/reniec/reniec_use_cases.dart';
-// import 'package:syncronize/src/data/datasource/remote/service/empresa_auth_service.dart';
-// import 'package:syncronize/src/data/repository/empresa_auth_repository_impl.dart';
-import 'package:syncronize/src/domain/repository/empresa_auth_repository.dart';
-import 'package:syncronize/src/domain/use_cases/empresa_auth/empresa_auth_use_cases.dart';
 
 @module
 abstract class AppModule {
@@ -60,29 +51,8 @@ abstract class AppModule {
     return ReniecService();
   }
   
-  @injectable
-  EmpresaUserRolesService empresaUserRolesService() {
-    if (kDebugMode) print('🏢 Creando EmpresaUserRolesService');
-    return EmpresaUserRolesService();
-  }
+  
 
-  // @injectable
-  // EmpresaAuthService empresaAuthService() {
-  //   if (kDebugMode) print('🏢 Creando EmpresaAuthService');
-  //   return EmpresaAuthService();
-  // }
-
-  // @singleton
-  // EmpresaAuthRepository empresaAuthRepository(EmpresaAuthService empresaAuthService, SecureStorage secureStorage) {
-  //   if (kDebugMode) print('📚 Creando EmpresaAuthRepository singleton');
-  //   return EmpresaAuthRepositoryImpl(empresaAuthService, secureStorage);
-  // }
-
-  @singleton
-  EmpresaAuthUseCases empresaAuthUseCases(EmpresaAuthRepository empresaAuthRepository) {
-    if (kDebugMode) print('🎯 Creando EmpresaAuthUseCases singleton');
-    return EmpresaAuthUseCases(repository: empresaAuthRepository);
-  }
   
   // ✅ REPOSITORIES - Singleton con dependencias inyectadas
   @singleton
@@ -97,11 +67,7 @@ abstract class AppModule {
     return ReniecRepositoryImpl(reniecService);
   }
   
-  @singleton
-  EmpresaUserRolesRepository empresaUserRolesRepository(EmpresaUserRolesService empresaUserRolesService) {
-    if (kDebugMode) print('📚 Creando EmpresaUserRolesRepository singleton');
-    return EmpresaUserRolesRepositoryImpl(empresaUserRolesService);
-  }
+  
   
   // ✅ USE CASES CONTAINERS - Singleton optimizado
   @singleton
@@ -127,12 +93,5 @@ abstract class AppModule {
     );
   }
 
-  @singleton
-  EmpresaUserRolesUseCases empresaUserRolesUseCases(EmpresaUserRolesRepository empresaUserRolesRepository) {
-    if (kDebugMode) print('🎯 Creando EmpresaUserRolesUseCases singleton');
-    
-    return EmpresaUserRolesUseCases(
-      getEmpresaUserRoles: GetEmpresaUserRolesUsecase(empresaUserRolesRepository),
-    );
-  }
+  
 }

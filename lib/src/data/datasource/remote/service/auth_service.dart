@@ -104,52 +104,6 @@ class AuthService {
     }
   }
 
-  // REGISTRO OPTIMIZADO PARA PRODUCCIÓN
-  // Future<Resource<AuthResponseRegisterNew>> register(UserRegisterNew user) async {
-  //   Stopwatch? stopwatch;
-  //   if (kDebugMode) {
-  //     stopwatch = Stopwatch()..start();
-  //   }
-    
-  //   try {
-  //     if (kDebugMode) print('📝 AuthService: Iniciando registro...');
-      
-  //     final response = await _dio.post(
-  //       'api/auth/register',
-  //       data: user.toJson(),
-  //       options: Options(
-  //         sendTimeout: const Duration(seconds: 3),
-  //         receiveTimeout: const Duration(seconds: 6),
-  //       ),
-  //     );
-
-  //     if (kDebugMode) {
-  //       stopwatch?.stop();
-  //       print('📥 Registro completado en ${stopwatch?.elapsedMilliseconds}ms - Status: ${response.statusCode}');
-  //     }
-      
-  //     if (response.statusCode == 200 || response.statusCode == 201) {
-  //       final authResponse = AuthResponseRegisterNew.fromJson(response.data);
-  //       return Success(authResponse);
-  //     } else {
-  //       return Error(_extractErrorMessage(response.data));
-  //     }
-      
-  //   } on DioException catch (e) {
-  //     if (kDebugMode) {
-  //       stopwatch?.stop();
-  //       print('💥 Error registro en ${stopwatch?.elapsedMilliseconds}ms: ${e.type}');
-  //     }
-  //     return Error(_handleDioError(e));
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       stopwatch?.stop();
-  //       print('💥 Error inesperado registro en ${stopwatch?.elapsedMilliseconds}ms: $e');
-  //     }
-  //     return Error('Error inesperado: ${e.toString()}');
-  //   }
-  // }
-
   Future<Resource<AuthResponseRegisterNew>> register(UserRegisterNew user) async {
     Stopwatch? stopwatch;
     if (kDebugMode) {
